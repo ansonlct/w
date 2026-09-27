@@ -1,0 +1,21 @@
+{
+  "Money": "assets/icons/money.svg",
+  "Balance": "assets/icons/balance.svg",
+  "Bank Cards": "assets/icons/bank-cards.svg",
+  "WePoints": "assets/icons/wepoints.svg",
+  "Mainland Travel": "assets/icons/mainland-travel.svg",
+  "Telecom Payment": "assets/icons/telecom-payment.svg",
+  "Utilities": "assets/icons/utilities.svg",
+  "Offers": "assets/icons/offers.svg",
+  "Charity": "assets/icons/charity.svg",
+  "Meituan": "assets/icons/meituan.svg",
+  "FPS": "assets/icons/fps.svg",
+  "We Remit": "assets/icons/we-remit.svg",
+  "Fusion Savings": "assets/icons/fusion-savings.svg",
+  "Card Repay": "assets/icons/card-repay.svg",
+  "Insurance": "assets/icons/insurance.svg",
+  "Transit QR Code": "assets/icons/transit-qr.svg",
+  "DiDi": "assets/icons/didi.svg",
+  "Flight and Train": "assets/icons/flight-train.svg",
+  "Hotel": "assets/icons/hotel.svg"
+}
