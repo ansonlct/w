@@ -211,7 +211,6 @@
   }
   document.getElementById('barcodeBtn').addEventListener('click',openCodeEditor);
   document.getElementById('qrBtn').addEventListener('click',openCodeEditor);
-  document.getElementById('merchantMore').addEventListener('click',openCodeEditor);
 
   document.getElementById('saveCode').addEventListener('click',()=>{
     const v = codeInput.value.trim() || 'PROTOTYPE-000000000001';
@@ -227,6 +226,70 @@
       codeNumber.classList.contains('hidden')
         ? 'Tap to view payment code number'
         : 'Tap to hide payment code number';
+  });
+
+
+  // ---------- Pay Merchant menu / Quick Pay enable state ----------
+  const merchantMenu = document.getElementById('merchantMenu');
+  const disableQuickPayConfirm = document.getElementById('disableQuickPayConfirm');
+  const codeZone = document.querySelector('#moneyPage .code-zone');
+  const quickPayDisabledView = document.getElementById('quickPayDisabledView');
+
+  let quickPayEnabled = localStorage.getItem('proto_quickpay_enabled') !== 'false';
+
+  function renderQuickPayState(){
+    if(quickPayEnabled){
+      codeZone.hidden = false;
+      quickPayDisabledView.hidden = true;
+    }else{
+      codeZone.hidden = true;
+      quickPayDisabledView.hidden = false;
+    }
+  }
+
+  document.getElementById('merchantMore').addEventListener('click',()=>{
+    merchantMenu.classList.add('open');
+  });
+
+  document.getElementById('merchantMenuCancel').addEventListener('click',()=>{
+    merchantMenu.classList.remove('open');
+  });
+
+  merchantMenu.addEventListener('click',e=>{
+    if(e.target === merchantMenu){
+      merchantMenu.classList.remove('open');
+    }
+  });
+
+  document.getElementById('disableTemporarily').addEventListener('click',()=>{
+    merchantMenu.classList.remove('open');
+    disableQuickPayConfirm.classList.add('open');
+  });
+
+  document.getElementById('continueQuickPay').addEventListener('click',()=>{
+    disableQuickPayConfirm.classList.remove('open');
+  });
+
+  document.getElementById('confirmDisableQuickPay').addEventListener('click',()=>{
+    quickPayEnabled = false;
+    localStorage.setItem('proto_quickpay_enabled','false');
+    disableQuickPayConfirm.classList.remove('open');
+    renderQuickPayState();
+    document.getElementById('moneyPage').scrollTop = 0;
+  });
+
+  document.getElementById('enableQuickPay').addEventListener('click',()=>{
+    quickPayEnabled = true;
+    localStorage.setItem('proto_quickpay_enabled','true');
+    renderQuickPayState();
+    renderCode();
+    document.getElementById('moneyPage').scrollTop = 0;
+  });
+
+  disableQuickPayConfirm.addEventListener('click',e=>{
+    if(e.target === disableQuickPayConfirm){
+      disableQuickPayConfirm.classList.remove('open');
+    }
   });
 
   // ---------- method sheet ----------
@@ -348,4 +411,33 @@
   renderBalance();
   renderCurrentMethod();
   renderCode();
+  renderQuickPayState();
+
+  // ---------- Interaction lock: no selection / no page zoom ----------
+  document.addEventListener('selectstart', e => e.preventDefault());
+
+  document.addEventListener('gesturestart', e => e.preventDefault(), {passive:false});
+  document.addEventListener('gesturechange', e => e.preventDefault(), {passive:false});
+  document.addEventListener('gestureend', e => e.preventDefault(), {passive:false});
+
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', e => {
+    const now = Date.now();
+    if(now - lastTouchEnd <= 300){
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, {passive:false});
+
+  document.addEventListener('wheel', e => {
+    if(e.ctrlKey){
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && ['+','-','=','0'].includes(e.key)){
+      e.preventDefault();
+    }
+  });
 })();

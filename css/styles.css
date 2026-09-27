@@ -1319,3 +1319,346 @@ button,input{font:inherit}
   .field input{font-size:3vw;padding:2vw}
   .btn{font-size:2.7vw;padding:1.9vw}
 }
+
+
+/* ============================================================
+   V12 — Money / Quick Pay interaction + mobile interaction lock
+   ============================================================ */
+
+html,
+body,
+.phone,
+.viewport{
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+
+html,
+body{
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+body{
+  min-height:100dvh;
+}
+
+.phone{
+  height:100dvh;
+  min-height:100svh;
+}
+
+.viewport{
+  height:100%;
+  min-height:0;
+}
+
+.page{
+  height:100%;
+  min-height:0;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+}
+
+/* Prevent selecting / dragging interface text and art. */
+html,
+body,
+body *{
+  -webkit-user-select:none !important;
+  user-select:none !important;
+  -webkit-touch-callout:none !important;
+}
+
+img,
+svg,
+canvas{
+  -webkit-user-drag:none;
+  user-drag:none;
+}
+
+/* Keep normal vertical scrolling without double-tap zoom behavior. */
+button,
+.service,
+.hero-item,
+.method-row,
+.quick-row,
+.pay-card-head,
+.code-zone{
+  touch-action:manipulation;
+}
+
+/* Title stays pinned while the Money content scrolls. */
+#moneyPage > .navbar{
+  position:sticky !important;
+  top:0 !important;
+  z-index:90 !important;
+  background:var(--wx) !important;
+  flex:0 0 auto;
+}
+
+/* Keep Pay Merchant header visually stable inside the card. */
+#moneyPage .pay-card-head{
+  background:#fff;
+}
+
+/* ---------- Pay Merchant three-dot action sheet ---------- */
+.merchant-menu-overlay{
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.43);
+  z-index:120;
+}
+
+.merchant-menu-sheet{
+  width:100%;
+  background:#fff;
+  border-radius:14px 14px 0 0;
+  overflow:hidden;
+  transform:translateY(100%);
+  animation:merchantSheetUp .25s cubic-bezier(.22,.78,.28,1) forwards;
+}
+
+@keyframes merchantSheetUp{
+  to{transform:translateY(0)}
+}
+
+.merchant-menu-item{
+  width:100%;
+  height:88px;
+  border:0;
+  border-bottom:1px solid #ececec;
+  background:#fff;
+  color:#181818;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  font-weight:400;
+  cursor:pointer;
+}
+
+.merchant-menu-item.danger{
+  color:#ef4a4e;
+}
+
+.merchant-menu-item.cancel{
+  border-bottom:0;
+}
+
+.merchant-menu-gap{
+  height:12px;
+  background:#f5f5f5;
+}
+
+/* ---------- Disable Quick Pay confirmation ---------- */
+.quickpay-confirm-overlay{
+  z-index:130;
+  background:rgba(0,0,0,.43);
+}
+
+.quickpay-confirm{
+  width:min(535px,72.7vw);
+  background:#fff;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 10px 36px rgba(0,0,0,.12);
+}
+
+.quickpay-confirm-body{
+  height:172px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px 30px;
+}
+
+.quickpay-confirm-title{
+  font-size:28px;
+  line-height:1.2;
+  color:#101010;
+  text-align:center;
+  font-weight:500;
+}
+
+.quickpay-confirm-actions{
+  height:96px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-top:1px solid #e7e7e7;
+}
+
+.quickpay-confirm-btn{
+  border:0;
+  background:#fff;
+  color:#151515;
+  font-size:27px;
+  font-weight:400;
+  cursor:pointer;
+}
+
+.quickpay-confirm-btn + .quickpay-confirm-btn{
+  border-left:1px solid #e7e7e7;
+}
+
+.quickpay-confirm-btn.disable{
+  color:#56678c;
+}
+
+/* ---------- Quick Pay disabled state ---------- */
+.quickpay-disabled-view{
+  position:relative;
+  min-height:725px;
+  padding:78px 36px 30px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  background:#fff;
+  text-align:center;
+}
+
+.quickpay-disabled-view[hidden]{
+  display:none !important;
+}
+
+.quickpay-info-icon{
+  width:90px;
+  height:90px;
+  border:5px solid #b9b9b9;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#b9b9b9;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:65px;
+  line-height:1;
+  font-weight:400;
+}
+
+.quickpay-disabled-message{
+  max-width:590px;
+  margin-top:62px;
+  font-size:27px;
+  line-height:1.35;
+  color:#101010;
+}
+
+.quickpay-enable-btn{
+  width:310px;
+  height:82px;
+  margin-top:162px;
+  border:0;
+  border-radius:8px;
+  background:#08c86d;
+  color:#fff;
+  font-size:27px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+.quickpay-security{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:37px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  color:#aaa;
+  font-size:18px;
+  line-height:1.25;
+}
+
+.quickpay-shield{
+  width:19px;
+  height:22px;
+  border:2px solid #aaa;
+  border-radius:9px 9px 12px 12px;
+  display:grid;
+  place-items:center;
+  font-size:10px;
+  line-height:1;
+}
+
+/* Mobile dimensions calibrated from the supplied 736×1600 screenshots. */
+@media(max-width:520px){
+
+  .merchant-menu-sheet{
+    border-radius:1.9vw 1.9vw 0 0;
+  }
+
+  .merchant-menu-item{
+    height:12.0vw;
+    font-size:3.75vw;
+  }
+
+  .merchant-menu-gap{
+    height:1.65vw;
+  }
+
+  .quickpay-confirm{
+    width:72.7vw;
+    border-radius:1.75vw;
+  }
+
+  .quickpay-confirm-body{
+    height:23.4vw;
+    padding:2.7vw 4vw;
+  }
+
+  .quickpay-confirm-title{
+    font-size:3.8vw;
+  }
+
+  .quickpay-confirm-actions{
+    height:13.05vw;
+  }
+
+  .quickpay-confirm-btn{
+    font-size:3.7vw;
+  }
+
+  .quickpay-disabled-view{
+    min-height:98.5vw;
+    padding:10.6vw 4.9vw 4.1vw;
+  }
+
+  .quickpay-info-icon{
+    width:12.2vw;
+    height:12.2vw;
+    border-width:.68vw;
+    font-size:8.8vw;
+  }
+
+  .quickpay-disabled-message{
+    max-width:80vw;
+    margin-top:8.4vw;
+    font-size:3.7vw;
+    line-height:1.35;
+  }
+
+  .quickpay-enable-btn{
+    width:42.1vw;
+    height:11.1vw;
+    margin-top:22.0vw;
+    border-radius:1.1vw;
+    font-size:3.7vw;
+  }
+
+  .quickpay-security{
+    left:3.25vw;
+    right:3.25vw;
+    bottom:5.0vw;
+    gap:1.05vw;
+    font-size:2.45vw;
+  }
+
+  .quickpay-shield{
+    width:2.6vw;
+    height:3.0vw;
+    border-width:.27vw;
+    font-size:1.35vw;
+  }
+}

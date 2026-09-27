@@ -1,8 +1,19 @@
-# Pay & Services Prototype — V11
+# Pay & Services Prototype — V12
 
-This version fixes the mobile proportions by calibrating the layout against the supplied native screenshots.
+GitHub Pages-ready static prototype.
 
-## Files
+## V12 changes
+
+- Money title remains pinned at the top while the page content scrolls.
+- Pay Merchant `•••` opens a bottom action sheet.
+- `Disable temporarily` opens a confirmation alert.
+- Confirming `Disable` replaces the visual barcode / QR area with the disabled Quick Pay view.
+- `Enable now` restores the visual barcode / QR area.
+- Quick Pay enabled/disabled state persists in `localStorage`.
+- Text/UI selection and page zoom gestures are disabled.
+- Existing Money, Balance, payment-method, card-edit and localStorage functionality remains.
+
+## Structure
 
 - `index.html`
 - `css/styles.css`
@@ -13,10 +24,10 @@ No build step is required.
 
 ## GitHub Pages
 
-Push the contents of this folder to the repository root, then enable:
+Push the contents of this folder to the repository root and enable:
 
 **Settings → Pages → Deploy from a branch → main → /(root)**
 
-## Important
+## Prototype note
 
-This is a visual prototype. It does not connect to a real wallet, bank, payment processor, or valid payment QR/barcode system.
+The QR/barcode graphics are visual-only patterns and are not valid payment credentials.

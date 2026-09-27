@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover" name="viewport"/>
 <title>Pay and Services Prototype</title>
 <link href="css/styles.css" rel="stylesheet"/>
 </head>
@@ -128,7 +128,7 @@
 <div class="chev">›</div>
 </button>
 </div>
-</div>
+</div><div class="quickpay-disabled-view" hidden="" id="quickPayDisabledView"><div class="quickpay-info-icon">i</div><div class="quickpay-disabled-message">Quick Pay not enabled yet. After enabling, display payment code to cashier to quickly pay.</div><button class="quickpay-enable-btn" id="enableQuickPay" type="button">Enable now</button><div class="quickpay-security"><span class="quickpay-shield">✓</span>WeChat Pay HK always protects your payment security.</div></div>
 </div>
 <div class="quick-actions">
 <div class="quick-row">
@@ -198,7 +198,26 @@
 </div>
 </section>
 <!-- balance edit -->
-<div class="overlay center-overlay" id="balanceModal">
+<div class="overlay merchant-menu-overlay" id="merchantMenu">
+<div aria-label="Pay Merchant menu" aria-modal="true" class="merchant-menu-sheet" role="dialog">
+<button class="merchant-menu-item" type="button">Payment settings</button>
+<button class="merchant-menu-item" type="button">FAQ</button>
+<button class="merchant-menu-item" type="button">View supported merchants</button>
+<button class="merchant-menu-item danger" id="disableTemporarily" type="button">Disable temporarily</button>
+<div class="merchant-menu-gap"></div>
+<button class="merchant-menu-item cancel" id="merchantMenuCancel" type="button">Cancel</button>
+</div>
+</div><div class="overlay center-overlay quickpay-confirm-overlay" id="disableQuickPayConfirm">
+<div aria-labelledby="disableQuickPayTitle" aria-modal="true" class="quickpay-confirm" role="alertdialog">
+<div class="quickpay-confirm-body">
+<div class="quickpay-confirm-title" id="disableQuickPayTitle">Disable Quick Pay?</div>
+</div>
+<div class="quickpay-confirm-actions">
+<button class="quickpay-confirm-btn" id="continueQuickPay" type="button">Continue</button>
+<button class="quickpay-confirm-btn disable" id="confirmDisableQuickPay" type="button">Disable</button>
+</div>
+</div>
+</div><div class="overlay center-overlay" id="balanceModal">
 <div class="modal">
 <h2>Edit prototype balance</h2>
 <p>This changes only the amount displayed in this local prototype.</p>
