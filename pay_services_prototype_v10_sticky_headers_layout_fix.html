@@ -1,0 +1,1678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pay and Services Prototype</title>
+<style>
+:root{
+  --wx:#2ab36b;
+  --wx-dark:#20a760;
+  --bg:#ededed;
+  --card:#fff;
+  --text:#1d1d1f;
+  --muted:#8b8b8b;
+  --line:#ececec;
+  --orange:#ff9e18;
+  --blue:#4b94c9;
+  --red:#e94854;
+  --yellow:#f4c42e;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:#d7d7d7;
+  color:var(--text);
+}
+body{display:flex;justify-content:center}
+button,input{font:inherit}
+.phone{
+  width:min(632px,100vw);
+  min-height:100vh;
+  background:var(--bg);
+  position:relative;
+  overflow:hidden;
+}
+.viewport{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  overflow:hidden;
+}
+.page{
+  position:absolute;
+  inset:0;
+  min-height:100vh;
+  overflow-y:auto;
+  transition:transform .32s cubic-bezier(.22,.78,.28,1),opacity .25s ease;
+  will-change:transform;
+}
+#homePage{
+  background:var(--bg);
+  transform:translateX(0);
+  z-index:2;
+}
+#moneyPage{
+  background:var(--wx);
+  transform:translateX(100%);
+  z-index:3;
+}
+#balancePage{
+  background:#f4f4f4;
+  transform:translateX(100%);
+  z-index:4;
+}
+.viewport.money-open #homePage,
+.viewport.balance-open #homePage{
+  transform:translateX(-22%);
+  opacity:.78;
+}
+.viewport.money-open #moneyPage{
+  transform:translateX(0);
+}
+.viewport.balance-open #balancePage{
+  transform:translateX(0);
+}
+
+/* common top bar */
+.navbar{
+  height:84px;
+  display:grid;
+  grid-template-columns:70px 1fr 70px;
+  align-items:center;
+  padding:0 14px;
+}
+#homePage .navbar{background:#f2f2f2}
+#moneyPage .navbar{background:var(--wx);color:white}
+#balancePage .navbar{background:#f2f2f2;color:#1f1f1f}
+.nav-title{
+  text-align:center;
+  font-size:26px;
+  font-weight:500;
+  letter-spacing:-.2px;
+}
+.navbtn{
+  width:48px;height:48px;border:0;background:transparent;
+  display:grid;place-items:center;padding:0;cursor:pointer;
+  color:inherit;
+}
+.navbtn svg{width:31px;height:31px;display:block}
+
+/* HOME */
+.hero{
+  margin:0 11px 12px;
+  height:215px;
+  border-radius:13px;
+  background:var(--wx);
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  color:#fff;
+}
+.hero-item{
+  border:0;background:transparent;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding-top:55px;
+  cursor:default;
+  min-width:0;
+}
+.hero-item.money,.hero-item.balance{cursor:pointer}
+.hero-icon{
+  width:54px;height:54px;
+  margin:0 0 13px;
+  flex:0 0 54px;
+}
+.hero-icon svg{width:100%;height:100%;display:block}
+.hero-label{
+  font-size:25px;
+  line-height:1.1;
+  height:29px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+}
+.hero-amount{
+  height:27px;
+  font-size:20px;
+  line-height:27px;
+  color:rgba(255,255,255,.40);
+  margin-top:8px;
+}
+.hero-item:not(.balance)::after{
+  content:"";
+  display:block;
+  height:27px;
+  margin-top:8px;
+}
+
+.section{
+  margin:0 11px 11px;
+  background:#fff;
+  border-radius:13px;
+  padding:25px 22px 23px;
+}
+.section-title{color:#808080;font-size:20px;margin-bottom:29px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  row-gap:44px;
+}
+.service{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:14px;min-height:118px;font-size:20px;line-height:1.15;
+}
+.service-icon{width:49px;height:49px;display:grid;place-items:center}
+.service-icon svg{width:100%;height:100%;display:block}
+.orange{color:var(--orange)}
+.green{color:#08bd68}
+.blue{color:var(--blue)}
+.red{color:var(--red)}
+.yellow{color:var(--yellow)}
+.home-footer{
+  padding:30px 0 48px;
+  text-align:center;color:#8a8a8a;font-size:16px;
+}
+
+/* MONEY PAGE */
+.money-shell{
+  padding:0 13px 56px;
+}
+.pay-card{
+  background:#fff;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.05);
+}
+.pay-card-head{
+  height:104px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:0 27px;
+  border-bottom:1px solid #efefef;
+}
+.head-icon{
+  width:38px;height:38px;color:var(--wx);
+  flex:0 0 auto;
+}
+.head-icon svg{width:100%;height:100%}
+.pay-card-title{
+  font-size:28px;
+  color:var(--wx);
+  flex:1;
+  font-weight:400;
+}
+.more-dots{
+  border:0;background:transparent;
+  font-size:30px;letter-spacing:3px;color:#777;cursor:pointer;
+  line-height:1;
+}
+.code-zone{
+  padding:35px 28px 20px;
+  text-align:center;
+}
+.code-hint{
+  color:#a8a8a8;
+  font-size:21px;
+  margin-bottom:14px;
+  cursor:pointer;
+  user-select:none;
+}
+.code-number{
+  color:#808080;
+  font-size:15px;
+  margin:-4px 0 12px;
+  min-height:20px;
+}
+.code-number.hidden{visibility:hidden}
+.code-click{
+  border:0;background:transparent;padding:0;width:100%;cursor:pointer;
+}
+#barcodeCanvas{
+  width:100%;
+  height:174px;
+  display:block;
+  background:#fff;
+}
+.qr-wrap{
+  display:flex;
+  justify-content:center;
+  margin-top:24px;
+}
+#qrCanvas{
+  width:250px;
+  height:250px;
+  display:block;
+  background:#fff;
+}
+.payment-method{
+  margin-top:34px;
+  border-top:1px solid #efefef;
+  padding:24px 0 3px;
+}
+.method-button{
+  width:100%;
+  border:0;background:#fff;
+  display:grid;
+  grid-template-columns:42px 1fr 26px;
+  gap:13px;
+  align-items:center;
+  text-align:left;
+  padding:0;
+  cursor:pointer;
+}
+.bank-badge{
+  width:36px;height:36px;border-radius:50%;
+  display:grid;place-items:center;
+  color:white;background:#116bb3;
+  font-weight:800;font-size:16px;
+}
+.method-main{
+  font-size:26px;
+  line-height:1.15;
+}
+.method-sub{
+  color:#8e8e8e;
+  font-size:18px;
+  margin-top:7px;
+}
+.chev{
+  color:#aaa;
+  font-size:32px;
+  transform:rotate(90deg);
+  line-height:1;
+}
+.quick-actions{
+  margin-top:14px;
+  border-radius:13px;
+  overflow:hidden;
+  background:rgba(255,255,255,.10);
+}
+.quick-row{
+  height:111px;
+  display:grid;
+  grid-template-columns:44px 1fr 25px;
+  gap:14px;
+  align-items:center;
+  padding:0 28px;
+  color:white;
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+.quick-row:last-child{border-bottom:0}
+.quick-row svg{width:38px;height:38px}
+.quick-title{font-size:27px}
+.quick-chev{font-size:38px;color:rgba(255,255,255,.42)}
+
+
+/* BALANCE PAGE */
+.balance-shell{
+  padding:30px 30px 120px;
+  min-height:calc(100vh - 84px);
+  position:relative;
+}
+.balance-card{
+  background:#fff;
+  border-radius:14px;
+  min-height:540px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:67px 34px 56px;
+  box-shadow:0 1px 2px rgba(0,0,0,.025);
+}
+.balance-coin{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  background:#ffc51e;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:50px;
+  font-weight:300;
+  line-height:1;
+}
+.balance-caption{
+  font-size:25px;
+  margin-top:25px;
+  color:#161616;
+}
+.balance-large{
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  color:#000;
+  margin-top:22px;
+  padding:0;
+  letter-spacing:-1px;
+}
+.balance-large .currency{
+  font-size:40px;
+  line-height:1.2;
+  margin-top:9px;
+}
+.balance-large .number{
+  font-size:79px;
+  line-height:1;
+  font-weight:400;
+}
+.balance-actions{
+  margin-top:90px;
+  width:100%;
+  max-width:490px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+}
+.balance-action{
+  border:0;
+  border-radius:7px;
+  height:68px;
+  font-size:31px;
+  cursor:pointer;
+}
+.balance-action.withdraw{
+  background:#f2f2f2;
+  color:#05b963;
+}
+.balance-action.topup{
+  background:#08c66a;
+  color:#fff;
+}
+.balance-account-label{
+  color:#7e7e7e;
+  font-size:24px;
+  margin:34px 2px 12px;
+}
+.fps-account{
+  height:108px;
+  background:#fff;
+  border-radius:14px;
+  display:grid;
+  grid-template-columns:48px 1fr 30px;
+  gap:16px;
+  align-items:center;
+  padding:0 32px;
+}
+.fps-account .fps-mini{
+  width:42px;
+  height:42px;
+  color:#318dca;
+}
+.fps-account .fps-mini svg{width:100%;height:100%}
+.fps-account-title{
+  font-size:29px;
+  color:#111;
+}
+.fps-chevron{
+  font-size:47px;
+  color:#aaa;
+  line-height:1;
+}
+.help-chip{
+  position:absolute;
+  right:17px;
+  bottom:128px;
+  border:2px solid #11c46b;
+  border-radius:35px;
+  background:#fff;
+  color:#11b963;
+  padding:10px 18px 10px 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:20px;
+}
+.help-dot{
+  width:36px;height:36px;border-radius:50%;
+  background:#27cf78;color:#0b874b;
+  display:grid;place-items:center;
+  font-weight:700;
+}
+.balance-links{
+  position:absolute;
+  left:0;right:0;
+  bottom:49px;
+  text-align:center;
+  color:#597096;
+  font-size:19px;
+}
+.balance-license{
+  position:absolute;
+  left:0;right:0;
+  bottom:18px;
+  text-align:center;
+  color:#b2b2b2;
+  font-size:15px;
+}
+
+@media(max-width:520px){
+  #homePage .hero-item{padding-top:53px}
+  #homePage .hero-label{font-size:21px;height:25px}
+  #homePage .hero-amount{font-size:17px;height:24px;line-height:24px;margin-top:7px}
+  #homePage .hero-item:not(.balance)::after{height:24px;margin-top:7px}
+  .balance-shell{padding:24px 20px 132px}
+  .balance-card{min-height:455px;padding:55px 24px 43px}
+  .balance-coin{width:66px;height:66px;font-size:43px}
+  .balance-caption{font-size:21px;margin-top:21px}
+  .balance-large{margin-top:20px}
+  .balance-large .currency{font-size:32px;margin-top:8px}
+  .balance-large .number{font-size:63px}
+  .balance-actions{margin-top:74px;gap:20px}
+  .balance-action{height:58px;font-size:25px}
+  .balance-account-label{font-size:20px;margin-top:29px}
+  .fps-account{height:92px;padding:0 26px}
+  .fps-account-title{font-size:24px}
+  .help-chip{bottom:116px;font-size:17px}
+  .balance-links{bottom:46px;font-size:16px}
+  .balance-license{font-size:12px}
+}
+
+
+/* V9 visual refinement */
+#homePage{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+}
+#homePage .navbar{
+  height:82px;
+  padding:0 12px;
+}
+#homePage .nav-title{
+  font-size:25px;
+  font-weight:500;
+  letter-spacing:-.35px;
+}
+#homePage .navbtn svg{
+  width:29px;
+  height:29px;
+}
+#homePage .hero{
+  margin:0 11px 12px;
+  height:216px;
+  border-radius:13px;
+  background:#2eb36b;
+}
+#homePage .section{
+  margin:0 11px 11px;
+  border-radius:13px;
+  padding:25px 22px 25px;
+}
+#homePage .section-title{
+  font-size:20px;
+  font-weight:400;
+  letter-spacing:-.1px;
+  margin-bottom:29px;
+  color:#7f7f7f;
+}
+#homePage .grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  column-gap:0;
+  row-gap:42px;
+}
+#homePage .service{
+  gap:13px;
+  min-height:118px;
+  font-size:20px;
+  line-height:1.14;
+  letter-spacing:-.22px;
+}
+#homePage .service-icon{
+  width:49px;
+  height:49px;
+}
+#homePage .home-footer{
+  font-size:16px;
+  padding:31px 0 47px;
+  color:#8c8c8c;
+}
+
+/* money sheet and bank-logo refinement */
+.method-list{padding:0 20px 28px}
+.method-row{
+  grid-template-columns:40px 1fr 34px;
+  gap:14px;
+  min-height:95px;
+  padding:0 0;
+}
+.method-logo{
+  position:relative;
+  overflow:hidden;
+  width:34px;height:34px;
+  font-size:12px;
+  letter-spacing:-.4px;
+}
+.logo-cn{
+  background:#d7192d !important;
+}
+.logo-cn::before,
+.logo-cn::after{
+  content:"";
+  position:absolute;
+  top:7px;bottom:7px;
+  width:3px;
+  background:#fff;
+  border-radius:3px;
+}
+.logo-cn::before{left:9px;box-shadow:6px 0 0 #fff,12px 0 0 #fff}
+.logo-cn::after{right:5px}
+.logo-up{
+  border-radius:6px !important;
+  background:linear-gradient(135deg,#cf2632 0 34%,#1e6f53 35% 67%,#2372aa 68% 100%) !important;
+  font-size:8px;
+  font-weight:700;
+}
+.logo-ccb{
+  background:#1972b8 !important;
+}
+.logo-ccb::before{
+  content:"";
+  position:absolute;
+  width:16px;height:16px;
+  border:4px solid white;
+  border-right-color:transparent;
+  transform:rotate(-43deg);
+  border-radius:3px;
+}
+.logo-boc{
+  background:#b30038 !important;
+}
+.logo-boc::before{
+  content:"";
+  width:17px;height:17px;
+  border:2px solid white;
+  border-radius:50%;
+  box-shadow:inset 0 0 0 4px #b30038;
+}
+.logo-boc::after{
+  content:"";
+  position:absolute;
+  width:3px;height:20px;
+  background:#fff;
+}
+.logo-citi{
+  background:#fff !important;
+  color:#30205e !important;
+  border-radius:0 !important;
+  font-size:11px;
+  font-weight:800;
+}
+.logo-citi::after{
+  content:"";
+  position:absolute;
+  left:7px;right:4px;top:7px;
+  height:7px;
+  border-top:2px solid #df3d4e;
+  border-radius:50%;
+}
+.method-row-title{
+  font-size:23px;
+  letter-spacing:-.25px;
+}
+.method-sub{
+  font-size:17px;
+  margin-top:5px;
+}
+.balance-available{
+  opacity:1;
+  cursor:pointer;
+}
+.balance-unavailable{
+  opacity:.27;
+  cursor:default;
+}
+
+/* Balance page: closer spacing + truly floating Help Center */
+#balancePage{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+}
+#balancePage .navbar{
+  height:83px;
+}
+.balance-shell{
+  padding:29px 29px 150px;
+  min-height:calc(100vh - 83px);
+}
+.balance-card{
+  min-height:542px;
+  border-radius:14px;
+  padding:67px 34px 54px;
+}
+.balance-coin{
+  width:77px;
+  height:77px;
+  font-size:50px;
+  background:#ffc51e;
+}
+.balance-caption{
+  font-size:25px;
+  margin-top:25px;
+  letter-spacing:-.25px;
+}
+.balance-large{
+  margin-top:22px;
+}
+.balance-large .currency{
+  font-size:40px;
+  margin-top:9px;
+  letter-spacing:-.8px;
+}
+.balance-large .number{
+  font-size:79px;
+  letter-spacing:-2.1px;
+  font-weight:400;
+}
+.balance-actions{
+  max-width:492px;
+  margin-top:88px;
+  gap:28px;
+}
+.balance-action{
+  height:68px;
+  font-size:31px;
+  font-weight:500;
+  letter-spacing:-.5px;
+}
+.balance-account-label{
+  margin:34px 2px 12px;
+  font-size:24px;
+}
+.fps-account{
+  height:108px;
+  border-radius:14px;
+  padding:0 31px;
+  grid-template-columns:48px 1fr 30px;
+}
+.fps-account-title{
+  font-size:29px;
+  letter-spacing:-.35px;
+}
+.balance-links{
+  position:fixed;
+  left:0;right:0;
+  bottom:49px;
+  z-index:7;
+}
+.balance-license{
+  position:fixed;
+  left:0;right:0;
+  bottom:18px;
+  z-index:7;
+}
+.help-chip{
+  position:fixed !important;
+  right:17px !important;
+  bottom:126px !important;
+  z-index:12 !important;
+  box-shadow:0 4px 13px rgba(0,0,0,.10);
+  background:#fff;
+  border:2px solid #13c76e;
+}
+
+.proto-mark{
+  position:absolute;
+  right:12px;
+  bottom:8px;
+  z-index:30;
+  font-size:9px;
+  color:rgba(0,0,0,.35);
+  letter-spacing:.4px;
+  user-select:none;
+  pointer-events:none;
+}
+
+/* overlays */
+.overlay{
+  position:absolute;
+  inset:0;
+  z-index:50;
+  display:none;
+  background:rgba(0,0,0,.44);
+}
+.overlay.open{display:flex}
+.center-overlay{align-items:center;justify-content:center;padding:22px}
+.modal{
+  width:min(390px,92vw);
+  background:#fff;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.modal h2{margin:0 0 7px;font-size:21px}
+.modal p{margin:0 0 15px;color:#777;font-size:13px;line-height:1.4}
+.field{margin:12px 0}
+.field label{
+  display:block;
+  color:#666;
+  font-size:13px;
+  margin-bottom:6px;
+}
+.field input{
+  width:100%;
+  border:1px solid #d9d9d9;
+  border-radius:9px;
+  padding:12px 13px;
+  outline:none;
+  font-size:17px;
+}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.btn{
+  flex:1;border:0;border-radius:9px;padding:11px 12px;cursor:pointer;
+}
+.btn.secondary{background:#f0f0f0}
+.btn.primary{background:var(--wx);color:white;font-weight:700}
+
+/* bottom sheet */
+.sheet-overlay{
+  align-items:flex-end;
+}
+.sheet{
+  width:100%;
+  background:#fff;
+  border-radius:15px 15px 0 0;
+  max-height:80vh;
+  overflow:auto;
+  transform:translateY(100%);
+  animation:sheetUp .28s cubic-bezier(.22,.78,.28,1) forwards;
+}
+@keyframes sheetUp{to{transform:translateY(0)}}
+.sheet-head{
+  height:84px;
+  display:grid;
+  grid-template-columns:60px 1fr 60px;
+  align-items:center;
+  padding:0 18px;
+  border-bottom:1px solid #eee;
+}
+.sheet-head h3{
+  margin:0;text-align:center;font-size:24px;font-weight:600;
+}
+.sheet-close,.sheet-edit{
+  border:0;background:transparent;cursor:pointer;
+  font-size:30px;color:#222;
+}
+.sheet-edit{font-size:15px;color:var(--wx);font-weight:700}
+.method-list{padding:0 30px 28px}
+.method-row{
+  display:grid;
+  grid-template-columns:40px 1fr 32px;
+  gap:14px;
+  align-items:center;
+  min-height:95px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+.method-logo{
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  color:white;font-size:13px;font-weight:800;
+}
+.method-row-title{font-size:23px}
+.tick{
+  font-size:34px;
+  color:#11bf65;
+  text-align:right;
+}
+.balance-unavailable .method-logo{
+  background:#ffd96b;color:#fff;
+}
+
+/* edit-mode inline controls */
+.edit-panel{
+  display:none;
+  padding:18px 30px 28px;
+  border-top:1px solid #eee;
+}
+.edit-panel.open{display:block}
+.edit-panel h4{margin:0 0 12px;font-size:17px}
+.edit-method-row{
+  display:grid;
+  grid-template-columns:1fr 100px;
+  gap:8px;
+  margin-bottom:9px;
+}
+.edit-method-row input{
+  border:1px solid #ddd;border-radius:8px;padding:10px;font-size:14px;min-width:0;
+}
+.edit-save{
+  width:100%;
+  border:0;border-radius:9px;padding:11px;
+  background:var(--wx);color:#fff;font-weight:700;cursor:pointer;
+}
+@media(max-width:520px){
+  .nav-title{font-size:22px}
+  .hero-label{font-size:21px}
+  .section-title{font-size:18px}
+  .service{font-size:17px}
+  .pay-card-title{font-size:23px}
+  .code-hint{font-size:18px}
+  .method-main{font-size:21px}
+  .quick-title{font-size:23px}
+}
+
+/* V10 — pinned title bars and Balance footer/layout repair */
+.page > .navbar{
+  position:sticky;
+  top:0;
+  z-index:24;
+  flex:0 0 auto;
+}
+#homePage > .navbar{
+  box-shadow:0 1px 0 rgba(0,0,0,.035);
+}
+#moneyPage > .navbar{
+  box-shadow:0 1px 0 rgba(0,0,0,.025);
+}
+#balancePage > .navbar{
+  box-shadow:0 1px 0 rgba(0,0,0,.035);
+}
+
+/* Keep the payment-method title visible while its list scrolls. */
+.sheet-head{
+  position:sticky;
+  top:0;
+  z-index:8;
+  background:#fff;
+}
+
+/*
+  Balance page footer content belongs to the page flow.
+  It must not be fixed over the FPS Account row.
+*/
+.balance-links{
+  position:static !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  z-index:auto !important;
+  margin-top:clamp(250px,36vh,500px);
+  text-align:center;
+  color:#597096;
+  font-size:19px;
+}
+.balance-license{
+  position:static !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  z-index:auto !important;
+  margin-top:13px;
+  padding-bottom:18px;
+  text-align:center;
+  color:#b2b2b2;
+  font-size:15px;
+}
+
+/* Help Center remains a true floating control, independent of page flow. */
+.help-chip{
+  position:fixed !important;
+  right:max(17px,env(safe-area-inset-right)) !important;
+  bottom:max(22px,env(safe-area-inset-bottom)) !important;
+  z-index:40 !important;
+}
+
+/* Give the Balance page enough scrollable breathing room on short screens. */
+.balance-shell{
+  padding-bottom:36px;
+}
+
+@media(max-width:520px){
+  .balance-links{
+    margin-top:clamp(220px,34vh,420px);
+    font-size:16px;
+  }
+  .balance-license{
+    font-size:12px;
+    padding-bottom:14px;
+  }
+  .help-chip{
+    right:max(12px,env(safe-area-inset-right)) !important;
+    bottom:max(14px,env(safe-area-inset-bottom)) !important;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="viewport" id="viewport">
+
+    <!-- HOME PAGE -->
+    <section class="page" id="homePage">
+      <div class="navbar">
+        <button class="navbtn" aria-label="Back">
+          <svg viewBox="0 0 32 32" fill="none" stroke="#1f1f1f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 5.5L9.5 16 20 26.5"/>
+          </svg>
+        </button>
+        <div class="nav-title">Pay and Services</div>
+        <button class="navbtn" aria-label="More">
+          <svg viewBox="0 0 32 32" fill="#1f1f1f">
+            <circle cx="7" cy="16" r="2.15"/><circle cx="16" cy="16" r="2.15"/><circle cx="25" cy="16" r="2.15"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hero">
+        <button class="hero-item money" id="moneyBtn">
+          <div class="hero-icon">
+            <svg viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 23V12h11M43 12h11v11M10 41v11h11M54 41v11H43"/>
+              <path d="M21.5 34.5l7.3 7.2 15.7-16.3"/>
+            </svg>
+          </div>
+          <div class="hero-label">Money</div>
+        </button>
+
+        <button class="hero-item balance" id="homeBalanceBtn">
+          <div class="hero-icon">
+            <svg viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="32" cy="32" r="25.5"/>
+              <path d="M21 26.5L32 18l11 8.5L32 42z"/>
+            </svg>
+          </div>
+          <div class="hero-label">Balance</div>
+          <div class="hero-amount" id="homeBalanceValue">HK$0.00</div>
+        </button>
+
+        <div class="hero-item">
+          <div class="hero-icon">
+            <svg viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="10.5" y="16.5" width="43" height="31" rx="1.5"/>
+              <path d="M15 27.3h34"/>
+            </svg>
+          </div>
+          <div class="hero-label">Bank Cards</div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section-title">Daily Services</div>
+        <div class="grid">
+          <div class="service"><div class="service-icon orange">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="31.5" cy="30.5" r="19.7"/><path d="M21.7 31.2l6.8 6.4 13.8-12.1"/><path d="M15.2 42.4c8.8 7.9 24.6 8.8 34.8.9"/>
+            </svg>
+          </div><div>WePoints</div></div>
+
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.5 28.5l13.3 5.7 9.2-5.2 9 5.2 13.5-5.7v22l-13.5 5.7-9-5.2-9.2 5.2-13.3-5.7z"/>
+              <path d="M22.8 34.2v22M41 34.2v22"/><circle cx="32" cy="14.5" r="10.2" fill="currentColor" stroke="none"/>
+              <path d="M27.2 14.4l3.7 3.8 6.7-7" stroke="white" stroke-width="2.5"/>
+            </svg>
+          </div><div>Mainland Travel</div></div>
+
+          <div class="service"><div class="service-icon blue">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="19" y="7.5" width="26" height="49" rx="2"/><path d="M19 16h26M19 49.5h26"/>
+              <path d="M32 22.5v19"/><path d="M26.7 28.2c1.2-4.1 10.4-4.8 10.7.2.4 5.2-10.8 3.4-10.8 8.5 0 4.9 9.1 5.2 11 1.1"/>
+            </svg>
+          </div><div>Telecom<br>Payment</div></div>
+
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.5 29.5L32 12.5l21.5 17"/><path d="M15.5 27.5V52h33V27.5"/>
+              <path d="M22.5 35.5h8.7V52h-8.7z"/><path d="M37 34h8.5v9H37z"/>
+            </svg>
+          </div><div>Utilities</div></div>
+
+          <div class="service"><div class="service-icon orange">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 22h32l-2.7 30H18.7z"/><path d="M24 24v-6a8 8 0 0116 0v6"/>
+            </svg>
+          </div><div>Offers</div></div>
+
+          <div class="service"><div class="service-icon red">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13.5 28.5l10.8-8.2c3.6-2.8 7.6-2.7 10.9.4l3.3 3.1 8.5-2.2 7.7 7.9-17 16.9c-3.2 3.2-8.4 3.4-11.8.3L13 34.7z"/>
+              <path d="M21.5 36.2l7.6 7M28.1 31.2l8.7 7.8M35.2 27.4l8.8 6.9"/>
+            </svg>
+          </div><div>Charity</div></div>
+
+          <div class="service"><div class="service-icon orange">
+            <svg viewBox="0 0 64 64">
+              <rect x="10.5" y="10.5" width="43" height="43" rx="8.5" fill="currentColor"/>
+              <text x="32" y="39.2" text-anchor="middle" fill="#fff" font-size="18" font-family="Arial,'PingFang SC','Microsoft YaHei',sans-serif" font-weight="700">美团</text>
+            </svg>
+          </div><div>Meituan</div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">Money Services</div>
+        <div class="grid">
+          <div class="service"><div class="service-icon blue">
+            <svg viewBox="0 0 64 64">
+              <path d="M10 33c7-14 25-20 42-13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+              <path d="M54 30c-7 14-25 20-42 13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+              <text x="32" y="39.5" text-anchor="middle" fill="currentColor" font-size="17.5" font-family="Arial,sans-serif" font-style="italic" font-weight="700">FPS</text>
+            </svg>
+          </div><div>FPS</div></div>
+
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="32" cy="25" r="13.5"/><path d="M32 17.5v15.3"/><path d="M27 21c1.4-4.3 9.7-3.7 9.8.5.1 4.6-9.7 3.1-9.7 7.2 0 3.6 7.5 4.2 9.8.8"/>
+              <path d="M9.5 40c9.4 12.5 31.6 15.8 45.5 1.5"/><path d="M47.5 38.2l8.6 3-4.1 8.1"/>
+            </svg>
+          </div><div>We Remit</div></div>
+
+          <div class="service"><div class="service-icon yellow">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13.8 23.5c7-8.2 27.8-8.2 36.4 0v7.2c0 14.7-8.2 22.6-18.2 25.2-10-2.6-18.2-10.5-18.2-25.2V23.5z"/>
+              <circle cx="39" cy="23.5" r="10.5"/><path d="M39 17.7v11.8"/>
+            </svg>
+          </div><div>Fusion Savings</div></div>
+
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="10.5" y="15.5" width="43" height="30" rx="1"/><path d="M15 25.5h34"/><path d="M43.5 42.5l10.5 6.4v-9.2"/>
+            </svg>
+          </div><div>Card Repay</div></div>
+
+          <div class="service"><div class="service-icon blue">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M32 8.5l21 9v12.2c0 13.1-8.6 22.1-21 27.1-12.4-5-21-14-21-27.1V17.5z"/><path d="M21.5 28.2l7.7 7.8L44 21.5"/>
+            </svg>
+          </div><div>Insurance</div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">Travel &amp; Transportation</div>
+        <div class="grid">
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64">
+              <path fill="currentColor" d="M11 34c0-12.4 9.2-21.5 22.6-21.5h18.1l-5.5 8.6H32.4c-7.3 0-12.4 5.1-12.4 12.4 0 7.2 5.1 12.3 12.4 12.3h4.4l-5.5 8.5h-2C18.1 54.3 11 46.8 11 34z"/>
+              <path fill="currentColor" d="M24 28.7h29.8l-5.3 8.5H30.6z"/>
+            </svg>
+          </div><div>Transit<br>QR Code</div></div>
+
+          <div class="service"><div class="service-icon orange">
+            <svg viewBox="0 0 64 64">
+              <path fill="currentColor" d="M12.5 14.5h39v14.8c0 14.4-8.1 23.6-19.5 23.6s-19.5-9.2-19.5-23.6z"/>
+              <path fill="#fff" d="M21 19.5h22v8.9c0 8.2-4.2 13.9-11 13.9s-11-5.7-11-13.9z"/>
+            </svg>
+          </div><div>DiDi</div></div>
+
+          <div class="service"><div class="service-icon green">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 34.5l18.1-2.8 15.6-13.3 5.6 1.1-9.3 13.9 14.7-1 3.7 3.8-20 6.9-8.4 8.8-4.3-.9 2.9-8.8-16.6 1.2z"/>
+            </svg>
+          </div><div>Flight and Train</div></div>
+
+          <div class="service"><div class="service-icon blue">
+            <svg viewBox="0 0 64 64">
+              <path fill="currentColor" d="M9.5 18l19-8.5V55h-19z"/><path fill="currentColor" d="M31.5 18l12.5-5.5V55H31.5z"/><path fill="currentColor" d="M47 25.5h7.5V55H47z"/>
+              <rect x="15" y="24" width="5" height="5" fill="white"/><rect x="15" y="35.5" width="5" height="5" fill="white"/>
+            </svg>
+          </div><div>Hotel</div></div>
+        </div>
+      </section>
+
+      <div class="home-footer">Current Wallet Region: Hong Kong</div>
+    </section>
+
+    <!-- MONEY PAGE -->
+    <section class="page" id="moneyPage">
+      <div class="navbar">
+        <button class="navbtn" id="moneyBack" aria-label="Back">
+          <svg viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 5.5L9.5 16 20 26.5"/>
+          </svg>
+        </button>
+        <div class="nav-title">Money</div>
+        <div></div>
+      </div>
+
+      <div class="money-shell">
+        <div class="pay-card">
+          <div class="pay-card-head">
+            <div class="head-icon">
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 23V12h11M43 12h11v11M10 41v11h11M54 41v11H43"/>
+                <path d="M21.5 34.5l7.3 7.2 15.7-16.3"/>
+              </svg>
+            </div>
+            <div class="pay-card-title">Pay Merchant</div>
+            <button class="more-dots" id="merchantMore">•••</button>
+          </div>
+
+          <div class="code-zone">
+            <div class="code-hint" id="codeHint">Tap to view payment code number</div>
+            <div class="code-number hidden" id="codeNumber"></div>
+
+            <button class="code-click" id="barcodeBtn" aria-label="Edit visual barcode">
+              <canvas id="barcodeCanvas" width="1100" height="174"></canvas>
+            </button>
+
+            <div class="qr-wrap">
+              <button class="code-click" id="qrBtn" aria-label="Edit visual QR pattern" style="width:auto">
+                <canvas id="qrCanvas" width="250" height="250"></canvas>
+              </button>
+            </div>
+
+            <div class="payment-method">
+              <button class="method-button" id="methodButton">
+                <div class="bank-badge" id="currentBadge">C</div>
+                <div>
+                  <div class="method-main" id="currentMethod">CCB (Asia) Visa(6331)</div>
+                  <div class="method-sub">Selected payment method</div>
+                </div>
+                <div class="chev">›</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <div class="quick-row">
+            <svg viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 23V12h11M43 12h11v11M10 41v11h11M54 41v11H43"/>
+              <path d="M20 31h24M32 19v24"/>
+            </svg>
+            <div class="quick-title">Scan and Pay</div>
+            <div class="quick-chev">›</div>
+          </div>
+          <div class="quick-row">
+            <svg viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="32" cy="34" r="18"/><path d="M22 30h20M26 21c0-6 12-6 12 0"/>
+              <path d="M22 41c7 5 13 5 20 0"/>
+            </svg>
+            <div class="quick-title">Receive Money</div>
+            <div class="quick-chev">›</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- BALANCE PAGE -->
+    <section class="page" id="balancePage">
+      <div class="navbar">
+        <button class="navbtn" id="balanceClose" aria-label="Close">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M7 7l18 18M25 7L7 25"/>
+          </svg>
+        </button>
+        <div class="nav-title"></div>
+        <button class="navbtn" aria-label="More">
+          <svg viewBox="0 0 32 32" fill="currentColor">
+            <circle cx="7" cy="16" r="2.15"/><circle cx="16" cy="16" r="2.15"/><circle cx="25" cy="16" r="2.15"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="balance-shell">
+        <div class="balance-card">
+          <div class="balance-coin">$</div>
+          <div class="balance-caption">My Balance</div>
+
+          <button class="balance-large" id="balanceAmountButton" aria-label="Edit prototype balance">
+            <span class="currency">HK$</span><span class="number" id="balancePageValue">0.00</span>
+          </button>
+
+          <div class="balance-actions">
+            <button class="balance-action withdraw" type="button">Withdrawal</button>
+            <button class="balance-action topup" type="button">Top Up</button>
+          </div>
+        </div>
+
+        <div class="balance-account-label">WeChat Pay HK Account</div>
+
+        <div class="fps-account">
+          <div class="fps-mini">
+            <svg viewBox="0 0 64 64">
+              <path d="M10 33c7-14 25-20 42-13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+              <path d="M54 30c-7 14-25 20-42 13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+              <text x="32" y="39.5" text-anchor="middle" fill="currentColor" font-size="17.5" font-family="Arial,sans-serif" font-style="italic" font-weight="700">FPS</text>
+            </svg>
+          </div>
+          <div class="fps-account-title">FPS Account</div>
+          <div class="fps-chevron">›</div>
+        </div>
+
+        <button class="help-chip" type="button" aria-label="Help Center">
+          <span class="help-dot">••</span>
+          <span>Help Center</span>
+        </button>
+
+        <div class="balance-links">Balance Transactions&nbsp;&nbsp;|&nbsp;&nbsp;Identity verification</div>
+        <div class="balance-license">WeChat Pay HK &nbsp; | &nbsp; SVF Licence No.: SVF0005</div>
+      </div>
+    </section>
+
+    <!-- balance edit -->
+    <div class="overlay center-overlay" id="balanceModal">
+      <div class="modal">
+        <h2>Edit prototype balance</h2>
+        <p>This changes only the amount displayed in this local prototype.</p>
+        <div class="field">
+          <label>HKD amount</label>
+          <input id="balanceInput" type="number" min="0" step="0.01" value="0.00">
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" data-close="balanceModal">Cancel</button>
+          <button class="btn primary" id="saveBalance">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- code editor -->
+    <div class="overlay center-overlay" id="codeModal">
+      <div class="modal">
+        <h2>Edit visual payment code</h2>
+        <p>The barcode and QR-like pattern below are deliberately visual-only mockups and are not generated as valid payment codes.</p>
+        <div class="field">
+          <label>Text / number used to change the visual pattern</label>
+          <input id="codeInput" type="text" maxlength="80" value="PROTOTYPE-000000000001">
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" data-close="codeModal">Cancel</button>
+          <button class="btn primary" id="saveCode">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- payment methods -->
+    <div class="overlay sheet-overlay" id="methodSheet">
+      <div class="sheet">
+        <div class="sheet-head">
+          <button class="sheet-close" id="closeSheet">×</button>
+          <h3>Select a payment method to pay</h3>
+          <button class="sheet-edit" id="toggleEdit">Edit</button>
+        </div>
+
+        <div class="method-list" id="methodList"></div>
+
+        <div class="edit-panel" id="editPanel">
+          <h4>Edit card names and bracket numbers</h4>
+          <div id="editRows"></div>
+          <button class="edit-save" id="saveMethods">Save payment methods</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="proto-mark">PROTOTYPE · VISUAL ONLY · NOT A REAL WALLET</div>
+</div>
+
+<script>
+(() => {
+  const viewport = document.getElementById('viewport');
+
+  // ---------- simple deterministic PRNG ----------
+  function hashString(str){
+    let h = 2166136261 >>> 0;
+    for(let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+  function mulberry32(a){
+    return function(){
+      let t = a += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+
+  // ---------- local data ----------
+  let balance = Number(localStorage.getItem('proto_balance_hkd') || '0');
+  let visualCode = localStorage.getItem('proto_visual_code') || 'PROTOTYPE-000000000001';
+
+  const defaultMethods = [
+    {name:'CNCBI UnionPay', digits:'2034', badge:'CN', color:'#d71920'},
+    {name:'UnionPay', digits:'6876', badge:'UP', color:'#286c59'},
+    {name:'CCB (Asia) Visa', digits:'6331', badge:'C', color:'#116bb3'},
+    {name:'BOC Visa', digits:'0017', badge:'B', color:'#b10035'},
+    {name:'Citi Mastercard', digits:'2401', badge:'citi', color:'#4a306d'}
+  ];
+
+  let methods;
+  try{
+    methods = JSON.parse(localStorage.getItem('proto_methods')) || defaultMethods;
+    if(!Array.isArray(methods) || methods.length < 1) methods = defaultMethods;
+  }catch(e){ methods = defaultMethods; }
+
+  let selected = Number(localStorage.getItem('proto_selected_method') || '2');
+  if(selected < 0 || selected > methods.length) selected = Math.min(2, methods.length - 1);
+  if(selected === methods.length && balance <= 0) selected = Math.min(2, methods.length - 1);
+
+  const homeBalanceValue = document.getElementById('homeBalanceValue');
+  const balancePageValue = document.getElementById('balancePageValue');
+  const balanceInput = document.getElementById('balanceInput');
+  const currentMethod = document.getElementById('currentMethod');
+  const currentBadge = document.getElementById('currentBadge');
+  const methodList = document.getElementById('methodList');
+  const editRows = document.getElementById('editRows');
+  const editPanel = document.getElementById('editPanel');
+  const codeInput = document.getElementById('codeInput');
+  const codeNumber = document.getElementById('codeNumber');
+
+  function formatMoney(n){
+    return 'HK$' + Number(n).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
+  function renderBalance(){
+    homeBalanceValue.textContent = formatMoney(balance);
+    balancePageValue.textContent = Number(balance).toLocaleString('en-HK',{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+
+  function renderCurrentMethod(){
+    if(selected === methods.length && balance > 0){
+      currentMethod.textContent = `Balance(${formatMoney(balance)} left)`;
+      currentBadge.textContent = '$';
+      currentBadge.style.background = '#f8c93c';
+      return;
+    }
+    if(selected < 0 || selected >= methods.length) selected = Math.min(2, methods.length - 1);
+    const m = methods[selected];
+    currentMethod.textContent = `${m.name}(${m.digits})`;
+    currentBadge.textContent = m.badge || m.name.slice(0,2);
+    currentBadge.style.background = m.color || '#116bb3';
+  }
+
+  // ---------- visual-only barcode ----------
+  function drawBarcode(seedText){
+    const c = document.getElementById('barcodeCanvas');
+    const ctx = c.getContext('2d');
+    const rand = mulberry32(hashString(seedText + '|BAR'));
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0,0,c.width,c.height);
+
+    let x = 18;
+    const maxX = c.width - 18;
+    ctx.fillStyle = '#000';
+    while(x < maxX){
+      const gap = 3 + Math.floor(rand()*7);
+      x += gap;
+      const w = 3 + Math.floor(rand()*10);
+      if(x+w > maxX) break;
+      ctx.fillRect(x, 10, w, c.height-20);
+      x += w;
+    }
+  }
+
+  // ---------- visual-only QR-like matrix ----------
+  function drawQR(seedText){
+    const c = document.getElementById('qrCanvas');
+    const ctx = c.getContext('2d');
+    const N = 29;
+    const cell = c.width / N;
+    const rand = mulberry32(hashString(seedText + '|QR'));
+    const grid = Array.from({length:N},()=>Array(N).fill(false));
+
+    function finder(x0,y0){
+      for(let y=0;y<7;y++){
+        for(let x=0;x<7;x++){
+          const edge = x===0 || x===6 || y===0 || y===6;
+          const core = x>=2 && x<=4 && y>=2 && y<=4;
+          grid[y0+y][x0+x] = edge || core;
+        }
+      }
+    }
+    finder(1,1); finder(N-8,1); finder(1,N-8);
+
+    for(let y=0;y<N;y++){
+      for(let x=0;x<N;x++){
+        const reserved =
+          (x>=1&&x<=7&&y>=1&&y<=7) ||
+          (x>=N-8&&x<=N-2&&y>=1&&y<=7) ||
+          (x>=1&&x<=7&&y>=N-8&&y<=N-2);
+        if(!reserved) grid[y][x] = rand() > .52;
+      }
+    }
+
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle='#fff';
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#000';
+    for(let y=0;y<N;y++){
+      for(let x=0;x<N;x++){
+        if(grid[y][x]){
+          ctx.fillRect(Math.floor(x*cell),Math.floor(y*cell),Math.ceil(cell),Math.ceil(cell));
+        }
+      }
+    }
+  }
+
+  function renderCode(){
+    codeInput.value = visualCode;
+    codeNumber.textContent = visualCode;
+    drawBarcode(visualCode);
+    drawQR(visualCode);
+  }
+
+  // ---------- page navigation ----------
+  document.getElementById('moneyBtn').addEventListener('click',()=>{
+    viewport.classList.remove('balance-open');
+    viewport.classList.add('money-open');
+    document.getElementById('moneyPage').scrollTop = 0;
+  });
+  document.getElementById('moneyBack').addEventListener('click',()=>{
+    viewport.classList.remove('money-open');
+  });
+
+  document.getElementById('homeBalanceBtn').addEventListener('click',()=>{
+    viewport.classList.remove('money-open');
+    viewport.classList.add('balance-open');
+    document.getElementById('balancePage').scrollTop = 0;
+  });
+  document.getElementById('balanceClose').addEventListener('click',()=>{
+    viewport.classList.remove('balance-open');
+  });
+
+  // ---------- generic overlay close ----------
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.getElementById(btn.dataset.close).classList.remove('open');
+    });
+  });
+  document.querySelectorAll('.center-overlay').forEach(ov=>{
+    ov.addEventListener('click',e=>{
+      if(e.target===ov) ov.classList.remove('open');
+    });
+  });
+
+  // ---------- balance ----------
+  document.getElementById('balanceAmountButton').addEventListener('click',()=>{
+    balanceInput.value = balance.toFixed(2);
+    document.getElementById('balanceModal').classList.add('open');
+    setTimeout(()=>balanceInput.focus(),0);
+  });
+  document.getElementById('saveBalance').addEventListener('click',()=>{
+    let n = Number(balanceInput.value);
+    if(!Number.isFinite(n) || n < 0) n = 0;
+    balance = n;
+    localStorage.setItem('proto_balance_hkd', String(balance));
+    if(selected === methods.length && balance <= 0){
+      selected = Math.min(2, methods.length - 1);
+      localStorage.setItem('proto_selected_method',String(selected));
+    }
+    renderBalance();
+    renderCurrentMethod();
+    if(sheet.classList.contains('open')) renderMethodList();
+    document.getElementById('balanceModal').classList.remove('open');
+  });
+
+  // ---------- payment code editor ----------
+  function openCodeEditor(){
+    codeInput.value = visualCode;
+    document.getElementById('codeModal').classList.add('open');
+    setTimeout(()=>codeInput.focus(),0);
+  }
+  document.getElementById('barcodeBtn').addEventListener('click',openCodeEditor);
+  document.getElementById('qrBtn').addEventListener('click',openCodeEditor);
+  document.getElementById('merchantMore').addEventListener('click',openCodeEditor);
+
+  document.getElementById('saveCode').addEventListener('click',()=>{
+    const v = codeInput.value.trim() || 'PROTOTYPE-000000000001';
+    visualCode = v;
+    localStorage.setItem('proto_visual_code',visualCode);
+    renderCode();
+    document.getElementById('codeModal').classList.remove('open');
+  });
+
+  document.getElementById('codeHint').addEventListener('click',()=>{
+    codeNumber.classList.toggle('hidden');
+    document.getElementById('codeHint').textContent =
+      codeNumber.classList.contains('hidden')
+        ? 'Tap to view payment code number'
+        : 'Tap to hide payment code number';
+  });
+
+  // ---------- method sheet ----------
+  const sheet = document.getElementById('methodSheet');
+
+  function bankLogoClass(m){
+    const n = String(m.name || '').toLowerCase();
+    if(n.includes('cncbi')) return 'logo-cn';
+    if(n === 'unionpay' || n.startsWith('unionpay')) return 'logo-up';
+    if(n.includes('ccb')) return 'logo-ccb';
+    if(n.includes('boc')) return 'logo-boc';
+    if(n.includes('citi')) return 'logo-citi';
+    return '';
+  }
+
+  function renderMethodList(){
+    methodList.innerHTML = '';
+    methods.forEach((m,i)=>{
+      const row = document.createElement('div');
+      row.className='method-row';
+      const logoClass = bankLogoClass(m);
+      const logoText = logoClass === 'logo-citi' ? 'citi' :
+                       logoClass === 'logo-up' ? 'UP' :
+                       logoClass ? '' : (m.badge || m.name.slice(0,2)).replace(/[<>]/g,'');
+      row.innerHTML = `
+        <div class="method-logo ${logoClass}" style="${logoClass ? '' : `background:${m.color || '#666'}`}">${logoText}</div>
+        <div class="method-row-title">${escapeHTML(m.name)}(${escapeHTML(m.digits)})</div>
+        <div class="tick">${i===selected?'✓':''}</div>
+      `;
+      row.addEventListener('click',()=>{
+        selected = i;
+        localStorage.setItem('proto_selected_method',String(selected));
+        renderCurrentMethod();
+        renderMethodList();
+        setTimeout(()=>sheet.classList.remove('open'),120);
+      });
+      methodList.appendChild(row);
+    });
+
+    const balanceRow = document.createElement('div');
+    const hasBalance = balance > 0;
+    balanceRow.className = 'method-row ' + (hasBalance ? 'balance-available' : 'balance-unavailable');
+    balanceRow.innerHTML = `
+      <div class="method-logo" style="background:#f8c93c">$</div>
+      <div>
+        <div class="method-row-title">Balance(${formatMoney(balance)} left)</div>
+        ${hasBalance ? '<div class="method-sub">Available balance</div>' : '<div class="method-sub">Insufficient balance</div>'}
+      </div>
+      <div class="tick">${selected===methods.length && hasBalance ? '✓' : ''}</div>
+    `;
+    if(hasBalance){
+      balanceRow.addEventListener('click',()=>{
+        selected = methods.length;
+        localStorage.setItem('proto_selected_method',String(selected));
+        renderCurrentMethod();
+        renderMethodList();
+        setTimeout(()=>sheet.classList.remove('open'),120);
+      });
+    }
+    methodList.appendChild(balanceRow);
+  }
+
+  function renderEditRows(){
+    editRows.innerHTML='';
+    methods.forEach((m,i)=>{
+      const wrap = document.createElement('div');
+      wrap.className='edit-method-row';
+      wrap.innerHTML = `
+        <input data-name="${i}" value="${escapeAttr(m.name)}" aria-label="Card name ${i+1}">
+        <input data-digits="${i}" value="${escapeAttr(m.digits)}" maxlength="8" aria-label="Bracket number ${i+1}">
+      `;
+      editRows.appendChild(wrap);
+    });
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g,ch=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+  function escapeAttr(s){ return escapeHTML(s); }
+
+  document.getElementById('methodButton').addEventListener('click',()=>{
+    renderMethodList();
+    renderEditRows();
+    editPanel.classList.remove('open');
+    document.getElementById('toggleEdit').textContent='Edit';
+    sheet.classList.add('open');
+  });
+  document.getElementById('closeSheet').addEventListener('click',()=>sheet.classList.remove('open'));
+  sheet.addEventListener('click',e=>{ if(e.target===sheet) sheet.classList.remove('open'); });
+
+  document.getElementById('toggleEdit').addEventListener('click',()=>{
+    const willOpen = !editPanel.classList.contains('open');
+    editPanel.classList.toggle('open',willOpen);
+    document.getElementById('toggleEdit').textContent = willOpen ? 'Done' : 'Edit';
+    if(willOpen) renderEditRows();
+  });
+
+  document.getElementById('saveMethods').addEventListener('click',()=>{
+    methods = methods.map((m,i)=>{
+      const nameEl = document.querySelector(`[data-name="${i}"]`);
+      const digitsEl = document.querySelector(`[data-digits="${i}"]`);
+      return {
+        ...m,
+        name:(nameEl.value.trim() || m.name).slice(0,40),
+        digits:(digitsEl.value.trim() || m.digits).slice(0,8)
+      };
+    });
+    localStorage.setItem('proto_methods',JSON.stringify(methods));
+    renderCurrentMethod();
+    renderMethodList();
+    renderEditRows();
+    editPanel.classList.remove('open');
+    document.getElementById('toggleEdit').textContent='Edit';
+  });
+
+  // initial render
+  renderBalance();
+  renderCurrentMethod();
+  renderCode();
+})();
+</script>
+
+<style>
+.service-icon.hd-replaced svg{width:100%;height:100%;display:block;filter:none;shape-rendering:geometricPrecision}
+</style>
+<script>
+(() => {
+  const hdIcons = {"WePoints": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#F39A23\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <circle cx=\"62\" cy=\"55\" r=\"35\"/>\n  <path d=\"M40 56l14 13 28-24\"/>\n  <path d=\"M31 84c18 15 46 18 67 4\"/>\n  <path d=\"M37 95c16 10 39 12 56 4\" opacity=\".78\"/>\n</g></svg>", "Mainland Travel": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#09BE67\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M19 63l28 11 17-10 18 10 27-11v43L82 117 64 107 47 117 19 106z\"/>\n  <path d=\"M47 74v43M82 74v43\"/>\n</g>\n<circle cx=\"63\" cy=\"33\" r=\"23\" fill=\"#09BE67\"/>\n<path d=\"M51 33l8 8 17-18\" fill=\"none\" stroke=\"#fff\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "Telecom Payment": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#4C94C8\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <rect x=\"37\" y=\"16\" width=\"54\" height=\"96\" rx=\"5\"/>\n  <path d=\"M37 31h54M37 97h54\"/>\n  <path d=\"M65 43v43\"/>\n  <path d=\"M53 56c3-9 22-10 23 0 1 11-22 7-22 18 0 10 19 11 24 2\"/>\n</g></svg>", "Utilities": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#0BBE68\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M17 59L64 22l47 37\"/>\n  <path d=\"M28 53v55h70V53\"/>\n  <path d=\"M43 73h18v35H43z\"/>\n  <path d=\"M72 70h20v24H72z\"/>\n  <path d=\"M77 78h10M77 86h10\"/>\n</g></svg>", "Offers": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#F08D29\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M28 47h72l-7 62H35z\"/>\n  <path d=\"M45 49V36c0-13 9-22 19-22s19 9 19 22v13\"/>\n  <path d=\"M50 72c8 7 20 7 28 0\"/>\n</g></svg>", "Charity": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#ED4C58\" stroke-width=\"6.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M24 47c0-16 20-25 34-12l6 6 6-6c14-13 34-4 34 12 0 21-40 50-40 50S24 68 24 47z\"/>\n  <path d=\"M42 62l12-10c6-5 12-5 17 0l5 5 13-3\"/>\n  <path d=\"M46 70l12 11M57 63l14 12M68 58l14 10\"/>\n</g></svg>", "Meituan": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<rect x=\"17\" y=\"17\" width=\"94\" height=\"94\" rx=\"20\" fill=\"#F39A23\"/>\n<text x=\"64\" y=\"77\" text-anchor=\"middle\" fill=\"#fff\" font-family=\"Arial, 'Microsoft YaHei', sans-serif\" font-size=\"38\" font-weight=\"700\">美团</text></svg>", "FPS": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#2B79C3\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M20 66c10-30 44-46 74-34\"/>\n  <path d=\"M94 24l2 18-18-1\"/>\n  <path d=\"M108 62c-10 30-44 46-74 34\"/>\n  <path d=\"M34 105l-2-18 18 1\"/>\n</g>\n<text x=\"64\" y=\"74\" text-anchor=\"middle\" fill=\"#2B79C3\" font-family=\"Arial, sans-serif\" font-size=\"35\" font-style=\"italic\" font-weight=\"800\">FPS</text></svg>", "We Remit": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<circle cx=\"64\" cy=\"54\" r=\"28\" fill=\"none\" stroke=\"#09BE67\" stroke-width=\"6.5\"/>\n<g fill=\"none\" stroke=\"#09BE67\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M64 35v38\"/>\n  <path d=\"M52 44c4-10 24-9 24 1 0 11-24 7-24 18 0 10 20 11 25 2\"/>\n  <path d=\"M17 79c21 24 61 30 94 6\"/>\n  <path d=\"M94 76l18 7-9 17\"/>\n  <path d=\"M24 86c22 15 52 19 76 6\" opacity=\".7\"/>\n</g></svg>", "Fusion Savings": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#F2C132\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M24 54c14-19 50-21 69-3 8 8 12 19 10 31-2 15-12 26-29 31l-5-11H46l-6 11c-10-3-18-9-22-18l-10-2v-19l9-3c1-6 3-12 7-17z\"/>\n  <path d=\"M25 51l-7-14 19 5\"/>\n  <circle cx=\"39\" cy=\"68\" r=\"2.5\" fill=\"#F2C132\" stroke=\"none\"/>\n</g>\n<circle cx=\"85\" cy=\"39\" r=\"24\" fill=\"#fff\" stroke=\"#F2C132\" stroke-width=\"6.5\"/>\n<g fill=\"none\" stroke=\"#F2C132\" stroke-width=\"5.5\" stroke-linecap=\"round\">\n  <path d=\"M85 26v26\"/>\n  <path d=\"M78 32c2-6 14-6 14 0 0 7-14 4-14 11 0 6 11 7 14 1\"/>\n</g></svg>", "Card Repay": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#0BBE68\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <rect x=\"18\" y=\"35\" width=\"92\" height=\"54\" rx=\"2\"/>\n  <path d=\"M27 52h74\"/>\n  <path d=\"M91 85l19 12v-22\"/>\n</g></svg>", "Insurance": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\" width=\"1024\" height=\"1024\">\n<g fill=\"none\" stroke=\"#4A91C5\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n  <path d=\"M64 14l43 18v27c0 27-17 47-43 58-26-11-43-31-43-58V32z\"/>\n  <path d=\"M42 61l15 15 30-31\"/>\n</g></svg>"};
+  document.querySelectorAll('.service').forEach(service => {
+    const label = service.querySelector('div:last-child');
+    const icon = service.querySelector('.service-icon');
+    if(!label || !icon) return;
+    const key = label.textContent.replace(/\s+/g,' ').trim();
+    if(hdIcons[key]) {
+      icon.innerHTML = hdIcons[key];
+      icon.classList.add('hd-replaced');
+      icon.style.color = 'inherit';
+    }
+  });
+})();
+</script>
+</body>
+</html>
