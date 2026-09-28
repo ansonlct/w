@@ -38,9 +38,10 @@
     if(!Array.isArray(methods) || methods.length < 1) methods = defaultMethods;
   }catch(e){ methods = defaultMethods; }
 
-  let selected = Number(localStorage.getItem('proto_selected_method') || '2');
-  if(selected < 0 || selected > methods.length) selected = Math.min(2, methods.length - 1);
-  if(selected === methods.length && balance <= 0) selected = Math.min(2, methods.length - 1);
+  const selectedStorageKey = 'proto_selected_method_v13';
+  let selected = Number(localStorage.getItem(selectedStorageKey) ?? '0');
+  if(selected < 0 || selected > methods.length) selected = 0;
+  if(selected === methods.length && balance <= 0) selected = 0;
 
   const homeBalanceValue = document.getElementById('homeBalanceValue');
   const balancePageValue = document.getElementById('balancePageValue');
@@ -66,17 +67,28 @@
   }
 
   function renderCurrentMethod(){
+    currentBadge.className = 'bank-badge';
+
     if(selected === methods.length && balance > 0){
       currentMethod.textContent = `Balance(${formatMoney(balance)} left)`;
       currentBadge.textContent = '$';
       currentBadge.style.background = '#f8c93c';
       return;
     }
-    if(selected < 0 || selected >= methods.length) selected = Math.min(2, methods.length - 1);
+
+    if(selected < 0 || selected >= methods.length) selected = 0;
     const m = methods[selected];
     currentMethod.textContent = `${m.name}(${m.digits})`;
-    currentBadge.textContent = m.badge || m.name.slice(0,2);
-    currentBadge.style.background = m.color || '#116bb3';
+
+    const n = String(m.name || '').toLowerCase();
+    if(n.includes('cncbi')){
+      currentBadge.classList.add('logo-cn');
+      currentBadge.textContent = '';
+      currentBadge.style.background = '#e60012';
+    }else{
+      currentBadge.textContent = m.badge || m.name.slice(0,2);
+      currentBadge.style.background = m.color || '#116bb3';
+    }
   }
 
   // ---------- visual-only barcode ----------
@@ -105,7 +117,7 @@
   function drawQR(seedText){
     const c = document.getElementById('qrCanvas');
     const ctx = c.getContext('2d');
-    const N = 29;
+    const N = 21;
     const cell = c.width / N;
     const rand = mulberry32(hashString(seedText + '|QR'));
     const grid = Array.from({length:N},()=>Array(N).fill(false));
@@ -119,14 +131,14 @@
         }
       }
     }
-    finder(1,1); finder(N-8,1); finder(1,N-8);
+    finder(0,0); finder(N-7,0); finder(0,N-7);
 
     for(let y=0;y<N;y++){
       for(let x=0;x<N;x++){
         const reserved =
-          (x>=1&&x<=7&&y>=1&&y<=7) ||
-          (x>=N-8&&x<=N-2&&y>=1&&y<=7) ||
-          (x>=1&&x<=7&&y>=N-8&&y<=N-2);
+          (x>=0&&x<=6&&y>=0&&y<=6) ||
+          (x>=N-7&&x<=N-1&&y>=0&&y<=6) ||
+          (x>=0&&x<=6&&y>=N-7&&y<=N-1);
         if(!reserved) grid[y][x] = rand() > .52;
       }
     }
@@ -170,6 +182,35 @@
     viewport.classList.remove('balance-open');
   });
 
+  // ---------- Pay and Services menu + FAQ / Help ----------
+  const homeMenu = document.getElementById('homeMenu');
+  const helpPage = document.getElementById('helpPage');
+
+  function openHelp(){
+    homeMenu.classList.remove('open');
+    viewport.classList.add('help-open');
+    helpPage.scrollTop = 0;
+  }
+
+  function closeHelp(){
+    viewport.classList.remove('help-open');
+  }
+
+  document.getElementById('homeMoreBtn').addEventListener('click',()=>{
+    homeMenu.classList.add('open');
+  });
+
+  document.getElementById('homeMenuCancel').addEventListener('click',()=>{
+    homeMenu.classList.remove('open');
+  });
+
+  document.getElementById('homeFaqBtn').addEventListener('click',openHelp);
+  document.getElementById('helpClose').addEventListener('click',closeHelp);
+
+  homeMenu.addEventListener('click',e=>{
+    if(e.target === homeMenu) homeMenu.classList.remove('open');
+  });
+
   // ---------- generic overlay close ----------
   document.querySelectorAll('[data-close]').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -195,7 +236,7 @@
     localStorage.setItem('proto_balance_hkd', String(balance));
     if(selected === methods.length && balance <= 0){
       selected = Math.min(2, methods.length - 1);
-      localStorage.setItem('proto_selected_method',String(selected));
+      localStorage.setItem(selectedStorageKey,String(selected));
     }
     renderBalance();
     renderCurrentMethod();
@@ -249,6 +290,11 @@
 
   document.getElementById('merchantMore').addEventListener('click',()=>{
     merchantMenu.classList.add('open');
+  });
+
+  document.getElementById('moneyFaqBtn').addEventListener('click',()=>{
+    merchantMenu.classList.remove('open');
+    openHelp();
   });
 
   document.getElementById('merchantMenuCancel').addEventListener('click',()=>{
@@ -321,7 +367,7 @@
       `;
       row.addEventListener('click',()=>{
         selected = i;
-        localStorage.setItem('proto_selected_method',String(selected));
+        localStorage.setItem(selectedStorageKey,String(selected));
         renderCurrentMethod();
         renderMethodList();
         setTimeout(()=>sheet.classList.remove('open'),120);
@@ -343,7 +389,7 @@
     if(hasBalance){
       balanceRow.addEventListener('click',()=>{
         selected = methods.length;
-        localStorage.setItem('proto_selected_method',String(selected));
+        localStorage.setItem(selectedStorageKey,String(selected));
         renderCurrentMethod();
         renderMethodList();
         setTimeout(()=>sheet.classList.remove('open'),120);
@@ -440,4 +486,176 @@
       e.preventDefault();
     }
   });
+})();
+
+// V14 — Balance Withdrawal / Mainland transfer flow
+(() => {
+  const viewport = document.getElementById('viewport');
+  const receivingPage = document.getElementById('receivingRegionPage');
+  const withdrawalPage = document.getElementById('balanceWithdrawalPage');
+  const mainlandPage = document.getElementById('mainlandTransferPage');
+  const withdrawBankAccountsPage = document.getElementById('withdrawBankAccountsPage');
+  const notesOverlay = document.getElementById('withdrawalNotesOverlay');
+  const receivingBankOverlay = document.getElementById('receivingBankOverlay');
+  const withdrawInstructionOverlay = document.getElementById('withdrawInstructionOverlay');
+  const webviewMoreOverlay = document.getElementById('webviewMoreOverlay');
+  if(!viewport || !receivingPage || !withdrawalPage || !mainlandPage || !withdrawBankAccountsPage || !notesOverlay) return;
+
+  const flowClasses = ['receiving-open','balance-withdrawal-open','mainland-transfer-open','withdraw-bank-accounts-open'];
+  function clearFlow(){ flowClasses.forEach(c => viewport.classList.remove(c)); }
+  function openReceiving(){ clearFlow(); viewport.classList.add('receiving-open'); receivingPage.scrollTop = 0; }
+  function openWithdrawal(){ clearFlow(); viewport.classList.add('balance-withdrawal-open'); withdrawalPage.scrollTop = 0; syncWithdrawalBalance(); resetWithdrawalAmount(); }
+  function openMainland(){ clearFlow(); viewport.classList.add('mainland-transfer-open'); mainlandPage.scrollTop = 0; }
+  function openWithdrawBankAccounts(){ clearFlow(); viewport.classList.add('withdraw-bank-accounts-open'); withdrawBankAccountsPage.scrollTop = 0; }
+  function backToBalance(){
+    clearFlow();
+    notesOverlay.classList.remove('open');
+    receivingBankOverlay?.classList.remove('open');
+    withdrawInstructionOverlay?.classList.remove('open');
+    webviewMoreOverlay?.classList.remove('open');
+  }
+
+  const withdrawalBtn = document.getElementById('withdrawalBtn');
+  if(withdrawalBtn) withdrawalBtn.addEventListener('click', openReceiving);
+  document.getElementById('receivingClose').addEventListener('click', backToBalance);
+  document.getElementById('receivingBottomBack').addEventListener('click', backToBalance);
+  document.getElementById('withdrawHongKongBtn').addEventListener('click', openWithdrawal);
+  document.getElementById('transferMainlandBtn').addEventListener('click', openMainland);
+
+  document.getElementById('balanceWithdrawalClose').addEventListener('click', openReceiving);
+  document.getElementById('balanceWithdrawalBottomBack').addEventListener('click', openReceiving);
+  document.getElementById('mainlandTransferClose').addEventListener('click', openReceiving);
+  document.getElementById('mainlandBottomBack').addEventListener('click', openReceiving);
+  document.getElementById('withdrawBankAccountsClose').addEventListener('click', openWithdrawal);
+  document.getElementById('withdrawBankAccountsBottomBack').addEventListener('click', openWithdrawal);
+  document.getElementById('withdrawDestinationBtn').addEventListener('click', openWithdrawBankAccounts);
+
+  function openNotes(){ notesOverlay.classList.add('open'); }
+  function closeNotes(){ notesOverlay.classList.remove('open'); }
+  document.getElementById('withdrawalNotesBtn').addEventListener('click', openNotes);
+  document.getElementById('withdrawalNotesClose').addEventListener('click', closeNotes);
+  document.getElementById('withdrawalNotesOk').addEventListener('click', closeNotes);
+  notesOverlay.addEventListener('click', e => { if(e.target === notesOverlay) closeNotes(); });
+
+  // Withdrawal instruction note dialog
+  function openWithdrawInstruction(){ withdrawInstructionOverlay?.classList.add('open'); }
+  function closeWithdrawInstruction(){ withdrawInstructionOverlay?.classList.remove('open'); }
+  document.getElementById('withdrawInstructionBtn')?.addEventListener('click', openWithdrawInstruction);
+  document.getElementById('withdrawInstructionOk')?.addEventListener('click', closeWithdrawInstruction);
+  withdrawInstructionOverlay?.addEventListener('click', e => { if(e.target === withdrawInstructionOverlay) closeWithdrawInstruction(); });
+
+  // Withdrawal destination bank selector page
+  const destinationBankStrong = document.querySelector('#withdrawDestinationBtn .destination-bank-copy strong');
+  const destinationBankSmall = document.querySelector('#withdrawDestinationBtn .destination-bank-copy small');
+  document.getElementById('selectCitiWithdrawal')?.addEventListener('click', () => {
+    if(destinationBankStrong) destinationBankStrong.textContent = 'Citibank (HK) (8353)';
+    if(destinationBankSmall) destinationBankSmall.textContent = 'Receive funds instantly';
+    openWithdrawal();
+  });
+  document.getElementById('selectHsbcWithdrawal')?.addEventListener('click', () => {
+    if(destinationBankStrong) destinationBankStrong.textContent = 'HSBC HK(2292)';
+    if(destinationBankSmall) destinationBankSmall.textContent = 'Receive funds instantly';
+    openWithdrawal();
+  });
+
+  // Bank Account / Mobile Number tabs
+  const bankTab = document.getElementById('bankAccountTab');
+  const mobileTab = document.getElementById('mobileNumberTab');
+  const bankForm = document.getElementById('bankTransferForm');
+  const mobileForm = document.getElementById('mobileTransferForm');
+  function showTransferTab(mode){
+    const bank = mode === 'bank';
+    bankTab.classList.toggle('active', bank);
+    mobileTab.classList.toggle('active', !bank);
+    bankForm.classList.toggle('hidden-form', !bank);
+    mobileForm.classList.toggle('hidden-form', bank);
+  }
+  bankTab.addEventListener('click', () => showTransferTab('bank'));
+  mobileTab.addEventListener('click', () => showTransferTab('mobile'));
+
+  // Mainland receiving bank sheet
+  let bankTarget = null;
+  function openReceivingBank(e){
+    bankTarget = e.currentTarget;
+    receivingBankOverlay?.classList.add('open');
+  }
+  function closeReceivingBank(){ receivingBankOverlay?.classList.remove('open'); }
+  document.querySelectorAll('.payee-bank-trigger').forEach(btn => btn.addEventListener('click', openReceivingBank));
+  document.getElementById('receivingBankClose')?.addEventListener('click', closeReceivingBank);
+  receivingBankOverlay?.addEventListener('click', e => { if(e.target === receivingBankOverlay) closeReceivingBank(); });
+  document.querySelectorAll('#receivingBankOverlay .receiving-bank-row').forEach(row => {
+    row.addEventListener('click', () => {
+      if(bankTarget){
+        const placeholder = bankTarget.querySelector('.transfer-placeholder');
+        if(placeholder){
+          placeholder.textContent = row.dataset.bank || '';
+          placeholder.classList.add('selected-bank-name');
+        }
+      }
+      closeReceivingBank();
+    });
+  });
+
+  // Embedded browser three-dot menu: Balance and all pages after it
+  function openWebviewMore(){
+    webviewMoreOverlay?.classList.add('open');
+  }
+  function closeWebviewMore(){ webviewMoreOverlay?.classList.remove('open'); }
+  document.querySelectorAll('.flow-more-btn').forEach(btn => btn.addEventListener('click', openWebviewMore));
+  document.getElementById('webviewMoreCancel')?.addEventListener('click', closeWebviewMore);
+  webviewMoreOverlay?.addEventListener('click', e => { if(e.target === webviewMoreOverlay) closeWebviewMore(); });
+
+  // Withdrawal amount keypad (visual/local prototype only)
+  let amountText = '0.00';
+  const amountDisplay = document.getElementById('withdrawalAmountDisplay');
+  const availableEl = document.getElementById('withdrawAvailableBalance');
+  const confirmBtn = document.getElementById('withdrawConfirm');
+
+  function getPrototypeBalance(){
+    const n = Number(localStorage.getItem('proto_balance_hkd') || '0');
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
+  function formatMoney(n){ return 'HK$' + Number(n).toLocaleString('en-HK',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function syncWithdrawalBalance(){ availableEl.textContent = formatMoney(getPrototypeBalance()); }
+  function updateAmountVisual(){
+    const n = Number(amountText || '0');
+    amountDisplay.textContent = amountText || '0';
+    amountDisplay.style.color = n > 0 ? '#111' : '#e7e7e7';
+    const enabled = n > 0 && n <= getPrototypeBalance();
+    confirmBtn.style.background = enabled ? '#09c96c' : '#79d7aa';
+  }
+  function resetWithdrawalAmount(){ amountText = '0.00'; updateAmountVisual(); }
+  function normalizeForTyping(){ if(amountText === '0.00' || amountText === '0') amountText = ''; }
+  document.querySelectorAll('#balanceWithdrawalPage .numeric-keypad [data-key]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      if(key === 'back'){
+        normalizeForTyping();
+        amountText = amountText.slice(0,-1);
+        if(!amountText) amountText = '0';
+      } else if(key === '.'){
+        normalizeForTyping();
+        if(!amountText.includes('.')) amountText = (amountText || '0') + '.';
+      } else {
+        normalizeForTyping();
+        const parts = amountText.split('.');
+        if(parts[1] && parts[1].length >= 2) return;
+        if(amountText.replace('.','').length >= 9) return;
+        amountText += key;
+      }
+      updateAmountVisual();
+    });
+  });
+  document.getElementById('withdrawAllBtn').addEventListener('click', () => {
+    amountText = getPrototypeBalance().toFixed(2);
+    updateAmountVisual();
+  });
+  confirmBtn.addEventListener('click', () => {
+    const n = Number(amountText || '0');
+    if(!(n > 0 && n <= getPrototypeBalance())) return;
+    // Visual-only prototype: do not perform a financial transaction.
+  });
+
+  syncWithdrawalBalance();
+  resetWithdrawalAmount();
 })();

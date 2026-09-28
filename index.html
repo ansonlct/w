@@ -19,7 +19,7 @@
 </svg>
 </button>
 <div class="nav-title">Pay and Services</div>
-<button aria-label="More" class="navbtn">
+<button aria-label="More" class="navbtn" id="homeMoreBtn">
 <svg fill="#1f1f1f" viewbox="0 0 32 32">
 <circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle>
 </svg>
@@ -150,6 +150,49 @@
 </div>
 </div>
 </section>
+
+<!-- HELP / FAQ PAGE -->
+<section class="page" id="helpPage" aria-label="Help">
+  <div class="navbar help-navbar">
+    <button aria-label="Close Help" class="navbtn" id="helpClose">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewbox="0 0 32 32">
+        <path d="M7 7l18 18M25 7L7 25"></path>
+      </svg>
+    </button>
+    <div class="nav-title">Help</div>
+    <button aria-label="More" class="navbtn" id="helpMoreBtn">
+      <svg fill="currentColor" viewbox="0 0 32 32">
+        <circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle>
+      </svg>
+    </button>
+  </div>
+  <div class="help-content">
+    <section class="help-section">
+      <h2>1. How to make a payment?</h2>
+      <p>Enter WeChat Pay HK and open "Money" to show a payment QR and bar code. A vendor then uses a bar-code scanner or a camera to scan the QR code (or bar code) to initiate a payment transaction. If your daily transaction limit has been reached or processing an unusual transaction, you will need to enter your payment password. For optimum security, payment codes automatically update every minute.</p>
+    </section>
+
+    <section class="help-section">
+      <h2>2. Payment Amount</h2>
+      <p>With WeChat’s highly secure payment system, there is no need to enter a payment password while processing less than 10 transactions a day if each transaction is less than 1000HKD. Otherwise you need to verify the payment password. The maximum daily amount of payment via payment code is 30,000HKD. To enable payment password on every transaction, go to "Payment code Management", and enable "Password Verification." The security system will intercept any suspicious transactions.</p>
+    </section>
+
+    <section class="help-section security">
+      <h2>3. Payment Security</h2>
+      <ul>
+        <li>Each QR code / bar code is time-limited and is valid for only one transaction;</li>
+        <li>Be careful with your payment code and do not send your payment code to others;</li>
+        <li>When you first enable payment via payment code, WeChat Team issues you a certificate. If the certificate expired, you may need to re-enter your payment password;</li>
+        <li>If you change devices you may need to re-enter your payment password;</li>
+        <li>The security system will intercept any suspicious transactions;</li>
+        <li>Unusual activity may necessitate re-entering your payment password.</li>
+      </ul>
+    </section>
+
+    <p class="help-accessibility">This mobile app has been incorporated with accessibility design as appropriate. Should you have any enquiries or comments on its accessibility, please contact us by phone at WeChat Pay HK customer service hotline 852-39291666 or email at hkpay@wechat.com.</p>
+  </div>
+</section>
+
 <!-- BALANCE PAGE -->
 <section class="page" id="balancePage">
 <div class="navbar">
@@ -159,7 +202,7 @@
 </svg>
 </button>
 <div class="nav-title"></div>
-<button aria-label="More" class="navbtn">
+<button aria-label="More" class="navbtn flow-more-btn" id="balanceMoreBtn">
 <svg fill="currentColor" viewbox="0 0 32 32">
 <circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle>
 </svg>
@@ -173,7 +216,7 @@
 <span class="currency">HK$</span><span class="number" id="balancePageValue">0.00</span>
 </button>
 <div class="balance-actions">
-<button class="balance-action withdraw" type="button">Withdrawal</button>
+<button class="balance-action withdraw" id="withdrawalBtn" type="button">Withdrawal</button>
 <button class="balance-action topup" type="button">Top Up</button>
 </div>
 </div>
@@ -197,11 +240,248 @@
 <div class="balance-license">WeChat Pay HK   |   SVF Licence No.: SVF0005</div>
 </div>
 </section>
+
+
+<!-- RECEIVING REGION PAGE -->
+<section class="page transfer-flow-page" id="receivingRegionPage" aria-label="Select the receiving region">
+  <div class="navbar flow-navbar">
+    <button aria-label="Close" class="navbtn" id="receivingClose">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 32 32"><path d="M7 7l18 18M25 7L7 25"></path></svg>
+    </button>
+    <div class="nav-title"></div>
+    <button aria-label="More" class="navbtn flow-more-btn" id="receivingMoreBtn">
+      <svg fill="currentColor" viewBox="0 0 32 32"><circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle></svg>
+    </button>
+  </div>
+  <div class="receiving-content">
+    <h1>Select the receiving region</h1>
+    <div class="receiving-card">
+      <button class="receiving-option" id="withdrawHongKongBtn" type="button">
+        <div class="receiving-copy"><div class="receiving-title">Withdraw to Hong Kong (China)</div><div class="receiving-sub">Arrives in 2–4 business days. Verified users enjoy instant withdrawal.</div></div>
+        <div class="receiving-chevron">›</div>
+      </button>
+      <button class="receiving-option" id="transferMainlandBtn" type="button">
+        <div class="receiving-copy"><div class="receiving-title">Transfer to Mainland China</div><div class="receiving-sub">Transfer to a bank account in Chinese Mainland via FPS cross-border transfer.</div></div>
+        <div class="receiving-chevron">›</div>
+      </button>
+    </div>
+    <button class="withdrawal-notes-link" id="withdrawalNotesBtn" type="button">Withdrawal Notes</button>
+  </div>
+  <div class="webview-bottom-bar flow-webbar">
+    <button class="webview-nav back" id="receivingBottomBack" aria-label="Back">‹</button>
+    <button class="webview-nav forward" aria-label="Forward">›</button>
+  </div>
+</section>
+
+<!-- BALANCE WITHDRAWAL PAGE -->
+<section class="page transfer-flow-page" id="balanceWithdrawalPage" aria-label="Balance Withdrawal">
+  <div class="navbar flow-navbar titled">
+    <button aria-label="Close" class="navbtn" id="balanceWithdrawalClose">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 32 32"><path d="M7 7l18 18M25 7L7 25"></path></svg>
+    </button>
+    <div class="nav-title">Balance Withdrawal</div>
+    <button aria-label="More" class="navbtn flow-more-btn" id="balanceWithdrawalMoreBtn">
+      <svg fill="currentColor" viewBox="0 0 32 32"><circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle></svg>
+    </button>
+  </div>
+  <div class="withdraw-destination">
+    <div class="destination-label">Withdrawal To</div>
+    <button class="destination-bank" id="withdrawDestinationBtn" type="button">
+      <span class="citi-mark"><span>citi</span></span>
+      <span class="destination-bank-copy"><strong>Citibank (HK) (8353)</strong><small>Receive funds instantly</small></span>
+      <span class="destination-chev">›</span>
+    </button>
+  </div>
+  <div class="withdraw-card">
+    <div class="withdraw-card-head"><span>Withdrawal Amount</span><button id="withdrawInstructionBtn" type="button">Withdrawal instructions</button></div>
+    <div class="withdraw-amount-row"><span class="withdraw-currency">HK$</span><span class="withdraw-amount" id="withdrawalAmountDisplay">0.00</span></div>
+    <div class="withdraw-rule"></div>
+    <div class="withdraw-balance-line"><span>Balance <span id="withdrawAvailableBalance">HK$0.00</span></span><button id="withdrawAllBtn" type="button">Withdraw All</button></div>
+  </div>
+  <div class="numeric-keypad" aria-label="Withdrawal amount keypad">
+    <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button><button class="backspace" data-key="back">⌫</button>
+    <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button><button class="confirm" id="withdrawConfirm" type="button">Confirm</button>
+    <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+    <button class="zero" data-key="0">0</button><button data-key=".">.</button>
+  </div>
+  <div class="webview-bottom-bar flow-webbar">
+    <button class="webview-nav back" id="balanceWithdrawalBottomBack" aria-label="Back">‹</button>
+    <button class="webview-nav forward" aria-label="Forward">›</button>
+  </div>
+</section>
+
+<!-- BANK ACCOUNT FOR WITHDRAWAL PAGE -->
+<section class="page transfer-flow-page" id="withdrawBankAccountsPage" aria-label="Bank Account for Withdrawal">
+  <div class="navbar flow-navbar titled">
+    <button aria-label="Close" class="navbtn" id="withdrawBankAccountsClose">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 32 32"><path d="M7 7l18 18M25 7L7 25"></path></svg>
+    </button>
+    <div class="nav-title">Balance Withdrawal</div>
+    <button aria-label="More" class="navbtn flow-more-btn" id="withdrawBankAccountsMoreBtn">
+      <svg fill="currentColor" viewBox="0 0 32 32"><circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle></svg>
+    </button>
+  </div>
+  <div class="withdraw-bank-accounts-content">
+    <div class="withdraw-bank-section-title">Bank Account for Withdrawal</div>
+    <button class="withdraw-bank-row" id="selectCitiWithdrawal" type="button">
+      <span class="withdraw-bank-logo logo-citi" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#fff" stroke="#d9d9d9"/><text x="24" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#1f4f91">citi</text><path d="M15 18c5-5 13-5 18 0" fill="none" stroke="#e1262f" stroke-width="1.8"/></svg></span>
+      <span>Citibank (HK) (8353)</span>
+    </button>
+    <button class="withdraw-bank-row" id="selectHsbcWithdrawal" type="button">
+      <span class="withdraw-bank-logo logo-hsbc" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#fff" stroke="#d9d9d9"/><g transform="translate(12 17)"><polygon points="0,7 7,0 14,7 7,14" fill="#e8252a"/><polygon points="10,7 17,0 24,7 17,14" fill="#e8252a"/><polygon points="7,0 10,7 7,14 4,7" fill="#fff"/><polygon points="17,0 20,7 17,14 14,7" fill="#fff"/></g></svg></span>
+      <span>HSBC HK(2292)</span>
+    </button>
+    <button class="use-new-bank-account" type="button"><span>+</span>Use New Bank Account</button>
+  </div>
+  <div class="webview-bottom-bar flow-webbar">
+    <button class="webview-nav back" id="withdrawBankAccountsBottomBack" aria-label="Back">‹</button>
+    <button class="webview-nav forward" aria-label="Forward">›</button>
+  </div>
+</section>
+
+<!-- MAINLAND TRANSFER PAGE -->
+<section class="page transfer-flow-page" id="mainlandTransferPage" aria-label="FPS transfer to Chinese Mainland">
+  <div class="navbar flow-navbar titled">
+    <button aria-label="Close" class="navbtn" id="mainlandTransferClose">
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.2" viewBox="0 0 32 32"><path d="M7 7l18 18M25 7L7 25"></path></svg>
+    </button>
+    <div class="nav-title">FPS</div>
+    <button aria-label="More" class="navbtn flow-more-btn" id="mainlandMoreBtn">
+      <svg fill="currentColor" viewBox="0 0 32 32"><circle cx="7" cy="16" r="2.15"></circle><circle cx="16" cy="16" r="2.15"></circle><circle cx="25" cy="16" r="2.15"></circle></svg>
+    </button>
+  </div>
+  <div class="mainland-content">
+    <h1>Transfer to Chinese Mainland</h1>
+    <div class="transfer-tabs" role="tablist" aria-label="Transfer method">
+      <button class="transfer-tab active" id="bankAccountTab" type="button">Bank Account</button>
+      <button class="transfer-tab" id="mobileNumberTab" type="button">Mobile Number</button>
+    </div>
+    <div class="transfer-form" id="bankTransferForm">
+      <button class="transfer-row selectable payee-bank-trigger" id="bankPayeeBankBtn" type="button"><span class="transfer-label">Payee's Bank</span><span class="transfer-placeholder">Select the payee's bank</span><span class="row-chev">›</span></button>
+      <label class="transfer-row"><span class="transfer-label">Account No.</span><input inputmode="numeric" placeholder="Bank account number" /></label>
+      <label class="transfer-row"><span class="transfer-label">Payee's Name</span><input placeholder="Recipient's name in pinyin" /></label>
+      <div class="transfer-example">For example: Payee's name(王一一), fill in WANG YIYI</div>
+    </div>
+    <div class="transfer-form hidden-form" id="mobileTransferForm">
+      <label class="transfer-row mobile-row"><span class="country-code">+86</span><input inputmode="tel" placeholder="Enter the registered mobile No." /></label>
+      <button class="transfer-row selectable payee-bank-trigger" id="mobilePayeeBankBtn" type="button"><span class="transfer-label">Payee's Bank</span><span class="transfer-placeholder multiline">Select the payee's bank<br>(optional)</span><span class="row-chev">›</span></button>
+    </div>
+    <button class="transfer-next" type="button">Next</button>
+  </div>
+  <div class="webview-bottom-bar flow-webbar">
+    <button class="webview-nav back" id="mainlandBottomBack" aria-label="Back">‹</button>
+    <button class="webview-nav forward" aria-label="Forward">›</button>
+  </div>
+</section>
+
+<!-- WITHDRAWAL NOTES SHEET -->
+<div class="overlay withdrawal-notes-overlay" id="withdrawalNotesOverlay">
+  <div class="withdrawal-notes-sheet" role="dialog" aria-modal="true" aria-labelledby="withdrawalNotesTitle">
+    <div class="withdrawal-notes-head">
+      <button id="withdrawalNotesClose" aria-label="Close Withdrawal Notes" type="button">×</button>
+      <h2 id="withdrawalNotesTitle">Withdrawal Notes</h2>
+      <div></div>
+    </div>
+    <div class="withdrawal-notes-body">
+      <p>1. Withdrawals to local bank accounts in Hong Kong, China :</p>
+      <p class="indent">a. Users who have not completed identity verification: up to HK$500 per month.</p>
+      <p class="indent">b. Users who have set a payment password but have not completed identity verification: up to HK$3,000 per day and HK$25,000 per year.</p>
+      <p class="indent">c. Users who have completed eKYC verification: up to HK$10,000 per day and HK$200,000 per year.</p>
+      <p class="indent">d. Each user may make up to 10 withdrawals per day.</p>
+      <p class="notes-break">2. Transfers to Chinese Mainland bank accounts via FPS cross-border transfer:</p>
+      <p class="indent">a. Existing users (Hong Kong identity card): per-transaction limit HK7,999, daily limit HK7,999, monthly limit HK50,000, and annual limit HK100,000.</p>
+      <p class="indent">b. eKYC-verified users (Hong Kong identity card): per-transaction limit HK10,000, daily limit HK10,000, monthly limit HK100,000, and annual limit HK200,000.</p>
+      <p class="notes-break">3. Some banks may not verify the account holder against</p>
+    </div>
+    <button class="withdrawal-notes-ok" id="withdrawalNotesOk" type="button">OK</button>
+  </div>
+</div>
+
+<!-- RECEIVING BANK SHEET -->
+<div class="overlay receiving-bank-overlay" id="receivingBankOverlay">
+  <div class="receiving-bank-sheet" role="dialog" aria-modal="true" aria-labelledby="receivingBankTitle">
+    <div class="receiving-bank-head">
+      <button id="receivingBankClose" aria-label="Close receiving bank" type="button">×</button>
+      <h2 id="receivingBankTitle">Select a receiving bank</h2>
+      <div></div>
+    </div>
+    <div class="receiving-bank-list">
+      <button class="receiving-bank-row" data-bank="Agricultural Bank of China" type="button"><span class="cn-bank-logo abc"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="21" fill="none" stroke="#159d88" stroke-width="5"/><path d="M28 9v38M17 18h22M17 38h22M20 18v20M36 18v20M15 28h26" fill="none" stroke="#159d88" stroke-width="3.2"/></svg></span><span>Agricultural Bank of China</span></button>
+      <button class="receiving-bank-row" data-bank="Bank of China" type="button"><span class="cn-bank-logo boc"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="21" fill="none" stroke="#c5002b" stroke-width="5"/><path d="M20 17h16v22H20zM15 28h26M28 12v32" fill="none" stroke="#c5002b" stroke-width="4"/></svg></span><span>Bank of China</span></button>
+      <button class="receiving-bank-row" data-bank="Bank of Communications" type="button"><span class="cn-bank-logo bocm"><svg viewBox="0 0 56 56"><path d="M13 15v28h8V31c2 8 9 13 17 13 6 0 11-3 15-7l-7-5c-2 3-5 4-8 4-6 0-10-4-10-9s4-9 10-9c3 0 6 1 8 4l7-5c-4-5-9-7-15-7-8 0-15 5-17 13v-8z" fill="#154b90"/></svg></span><span>Bank of Communications</span></button>
+      <button class="receiving-bank-row" data-bank="China Construction Bank" type="button"><span class="cn-bank-logo ccb"><svg viewBox="0 0 56 56"><path d="M10 23L28 8l18 15-18 15z" fill="#0a62ad"/><path d="M20 23l8-7 8 7-8 7z" fill="#fff"/><path d="M12 30c2 10 9 17 20 17 8 0 14-4 18-10l-8-4c-2 4-6 6-10 6-6 0-10-3-12-9z" fill="#0a62ad"/></svg></span><span>China Construction Bank</span></button>
+      <button class="receiving-bank-row" data-bank="China Merchants Bank" type="button"><span class="cn-bank-logo cmb"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="22" fill="#df1e26"/><path d="M10 33l8-20 10 20 10-20 8 20H10zm11-2h14l-7-13z" fill="#fff"/></svg></span><span>China Merchants Bank</span></button>
+      <button class="receiving-bank-row" data-bank="Industrial and Commercial Bank of China" type="button"><span class="cn-bank-logo icbc"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="21" fill="none" stroke="#cc0017" stroke-width="5"/><rect x="17" y="17" width="22" height="22" rx="1" fill="none" stroke="#cc0017" stroke-width="4"/><path d="M28 17v22M17 28h22" stroke="#cc0017" stroke-width="4"/></svg></span><span>Industrial and Commercial Bank of China</span></button>
+      <button class="receiving-bank-row" data-bank="Industrial Bank" type="button"><span class="cn-bank-logo cib"><svg viewBox="0 0 56 56"><path d="M8 29c8-12 28-17 40-6-8 12-28 17-40 6z" fill="none" stroke="#0755a4" stroke-width="5"/><path d="M17 29c5-5 13-7 21-4-5 5-13 7-21 4z" fill="#0755a4"/></svg></span><span>Industrial Bank</span></button>
+      <button class="receiving-bank-row" data-bank="Ping An Bank" type="button"><span class="cn-bank-logo pingan"><svg viewBox="0 0 56 56"><path d="M10 43L25 13h7l14 30h-9l-9-20-9 20z" fill="#ed1414"/><rect x="24" y="33" width="9" height="10" fill="#111"/></svg></span><span>Ping An Bank</span></button>
+      <button class="receiving-bank-row" data-bank="China CITIC Bank" type="button"><span class="cn-bank-logo citic"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="21" fill="none" stroke="#df001b" stroke-width="3"/><path d="M15 16v24M20 16v24M26 16v24M31 16v24M37 16v24M42 16v24M14 22h29M14 34h29" stroke="#df001b" stroke-width="2"/></svg></span><span>China CITIC Bank</span></button>
+      <button class="receiving-bank-row" data-bank="China Everbright Bank" type="button"><span class="cn-bank-logo ceb"><svg viewBox="0 0 56 56"><text x="6" y="34" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#ec4b31">E</text><text x="17" y="34" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#6c1b8b">Bank</text></svg></span><span>China Everbright Bank</span></button>
+      <button class="receiving-bank-row" data-bank="China Guangfa Bank" type="button"><span class="cn-bank-logo cgb"><svg viewBox="0 0 56 56"><path d="M28 8l17 29-17 11L11 37z" fill="#c70024"/><path d="M28 8l-6 20h12zM11 37h34l-17-9z" fill="#e51a33"/></svg></span><span>China Guangfa Bank</span></button>
+      <button class="weremit-more-banks" type="button">Can't find my beneficiary banks?<br>Go to WeRemit for more banks <span>›</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- WITHDRAWAL INSTRUCTION NOTE -->
+<div class="overlay withdrawal-instruction-overlay" id="withdrawInstructionOverlay">
+  <div class="withdraw-instruction-dialog" role="dialog" aria-modal="true" aria-labelledby="withdrawInstructionTitle">
+    <div class="withdraw-instruction-content">
+      <h2 id="withdrawInstructionTitle">Note</h2>
+      <div class="withdraw-instruction-text">
+        <p>1. The limit for balance withdrawals for users who have completed verification is HK$10,000 per day and HK$200,000 per year.</p>
+        <p>2. Each user can withdraw up to 10 times per day.</p>
+        <p>3. Some banks do not verify an account holder against the account number. Please ensure the accuracy of the account number to avoid withdrawal of funds to a wrong account.</p>
+      </div>
+    </div>
+    <button id="withdrawInstructionOk" class="withdraw-instruction-ok" type="button">OK</button>
+  </div>
+</div>
+
+<!-- EMBEDDED WEBVIEW MORE MENU -->
+<div class="overlay webview-more-overlay" id="webviewMoreOverlay">
+  <div class="webview-more-sheet" role="dialog" aria-modal="true" aria-label="Browser actions">
+    <div class="webview-more-powered">Powered by hkwallet.moneydata.hk</div>
+    <div class="webview-action-row webview-action-row-primary">
+      <button class="webview-action" type="button">
+        <span class="webview-action-icon star-icon"><svg viewBox="0 0 64 64"><path d="M32 7l7.1 14.4 15.9 2.3-11.5 11.2 2.7 15.8L32 43.2 17.8 50.7l2.7-15.8L9 23.7l15.9-2.3z" fill="none" stroke="#3fb7f2" stroke-width="4.2" stroke-linejoin="round"/></svg></span><span class="webview-action-label">Star</span>
+      </button>
+      <button class="webview-action" type="button">
+        <span class="webview-action-icon search-app-icon"><svg viewBox="0 0 64 64"><g stroke="#ff4e55" stroke-width="6.2" stroke-linecap="round"><path d="M32 10v13"/><path d="M13 23l13 5"/><path d="M16 48l11-11"/><path d="M48 47L38 37"/><path d="M52 20l-14 7"/></g></svg></span><span class="webview-action-label">Search</span>
+      </button>
+      <button class="webview-action" type="button">
+        <span class="webview-action-icon other-app-icon"><svg viewBox="0 0 64 64"><rect x="12" y="12" width="18" height="18" rx="1.5" fill="#12aaf0"/><rect x="34" y="12" width="18" height="18" rx="1.5" fill="#12aaf0"/><rect x="12" y="34" width="18" height="18" rx="1.5" fill="#12aaf0"/><path d="M43 31l11 11-11 11-11-11z" fill="#12aaf0"/></svg></span><span class="webview-action-label">Open in<br>Other App</span>
+      </button>
+    </div>
+    <div class="webview-action-row webview-action-row-secondary">
+      <button class="webview-action floating-action" type="button"><span class="webview-new-badge">New</span><span class="webview-action-icon"><svg viewBox="0 0 64 64"><rect x="12" y="15" width="28" height="34" rx="2" fill="none" stroke="#111" stroke-width="3.5"/><path d="M26 19h25v31H29" fill="none" stroke="#111" stroke-width="3.5"/><path d="M43 26v17" stroke="#111" stroke-width="2.5"/></svg></span><span class="webview-action-label">Floating<br>Window</span></button>
+      <button class="webview-action" type="button"><span class="webview-action-icon"><svg viewBox="0 0 64 64"><path d="M18 10v21h-7l16 16 16-16h-7V10" fill="none" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/><path d="M12 44v10h40V44" fill="none" stroke="#111" stroke-width="3.5"/></svg></span><span class="webview-action-label">Save as<br>Image</span></button>
+      <button class="webview-action" type="button"><span class="webview-action-icon"><svg viewBox="0 0 64 64"><path d="M32 9L55 50H9z" fill="none" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/><path d="M32 22v13" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><circle cx="32" cy="42" r="2.4" fill="#111"/></svg></span><span class="webview-action-label">Report</span></button>
+      <button class="webview-action" type="button"><span class="webview-action-icon"><svg viewBox="0 0 64 64"><path d="M48 20a20 20 0 1 0 4 20" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><path d="M47 10v14H33" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="webview-action-label">Refresh</span></button>
+      <button class="webview-action" type="button"><span class="webview-action-icon"><svg viewBox="0 0 64 64"><path d="M15 9h27l7 7v26H15z" fill="none" stroke="#111" stroke-width="3.3"/><path d="M22 20h18M22 27h13" stroke="#111" stroke-width="3" stroke-linecap="round"/><circle cx="43" cy="42" r="10" fill="none" stroke="#111" stroke-width="3.3"/><path d="M50 49l8 8" stroke="#111" stroke-width="3.3" stroke-linecap="round"/></svg></span><span class="webview-action-label">Search<br>Within Page</span></button>
+      <button class="webview-action" type="button"><span class="webview-action-icon text-size-icon"><span>Aa</span></span><span class="webview-action-label">Text Size</span></button>
+    </div>
+    <button class="webview-more-cancel" id="webviewMoreCancel" type="button">Cancel</button>
+  </div>
+</div>
+
+<!-- Pay and Services three-dot menu -->
+<div class="overlay home-menu-overlay" id="homeMenu">
+  <div aria-label="Pay and Services menu" aria-modal="true" class="home-menu-sheet" role="dialog">
+    <button class="home-menu-item" type="button">Transactions</button>
+    <button class="home-menu-item" type="button">Payment Management</button>
+    <button class="home-menu-item" type="button">Become WeChat Pay HK Merchant</button>
+    <button class="home-menu-item" id="homeFaqBtn" type="button">FAQ</button>
+    <button class="home-menu-item" type="button">Select Wallet Region</button>
+    <div class="home-menu-gap"></div>
+    <button class="home-menu-item cancel" id="homeMenuCancel" type="button">Cancel</button>
+  </div>
+</div>
+
 <!-- balance edit -->
 <div class="overlay merchant-menu-overlay" id="merchantMenu">
 <div aria-label="Pay Merchant menu" aria-modal="true" class="merchant-menu-sheet" role="dialog">
 <button class="merchant-menu-item" type="button">Payment settings</button>
-<button class="merchant-menu-item" type="button">FAQ</button>
+<button class="merchant-menu-item" id="moneyFaqBtn" type="button">FAQ</button>
 <button class="merchant-menu-item" type="button">View supported merchants</button>
 <button class="merchant-menu-item danger" id="disableTemporarily" type="button">Disable temporarily</button>
 <div class="merchant-menu-gap"></div>

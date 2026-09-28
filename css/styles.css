@@ -1662,3 +1662,1195 @@ button,
     font-size:1.35vw;
   }
 }
+
+
+/* ============================================================
+   V13 — screenshot-accurate Money, Pay & Services action sheet,
+   and Money FAQ/Help screen.
+   Reference colours/spacing are calibrated from IMG_4652/55/56.
+   ============================================================ */
+
+:root{
+  --wx:#2aae67;
+  --wx-dark:#2aae67;
+}
+
+/* Help is a full page that slides over whichever page launched it. */
+#helpPage{
+  background:#fff;
+  color:#1a1a1a;
+  transform:translateX(100%);
+  z-index:6;
+}
+.viewport.help-open #helpPage{
+  transform:translateX(0);
+}
+#helpPage > .navbar{
+  position:sticky;
+  top:0;
+  z-index:90;
+  background:#ededed;
+  color:#111;
+  box-shadow:none;
+}
+#helpPage .navbtn{
+  color:#111;
+}
+#helpPage .help-content{
+  background:#fff;
+}
+.help-section h2{
+  margin:0;
+  font-weight:400;
+  color:#111;
+}
+.help-section p,
+.help-section li,
+.help-accessibility{
+  color:#666;
+  font-weight:400;
+}
+
+/* Main Money screen colour and surfaces from the supplied screenshot. */
+#moneyPage{
+  background:#2aae67 !important;
+}
+#moneyPage > .navbar{
+  background:#2aae67 !important;
+  box-shadow:none !important;
+}
+#moneyPage .pay-card{
+  background:#feffff;
+  box-shadow:none;
+}
+#moneyPage .pay-card-head{
+  background:#f6f7f7;
+  border-bottom:0;
+}
+#moneyPage .code-zone{
+  background:#feffff;
+}
+#moneyPage .quick-actions{
+  background:#39b371;
+}
+#moneyPage .quick-row{
+  border-bottom-color:rgba(255,255,255,.10);
+}
+#moneyPage .head-icon,
+#moneyPage .pay-card-title{
+  color:#06c160;
+}
+#moneyPage .more-dots{
+  color:#7b7b7b;
+}
+#moneyPage .code-hint{
+  color:#b2b2b2;
+}
+#moneyPage .method-main{
+  color:#1a1a1a;
+}
+#moneyPage .method-sub{
+  color:#808080;
+}
+#moneyPage .chev{
+  color:#aaa;
+}
+
+/* Current CNCBI round mark, matching the red striped badge in the reference. */
+#currentBadge.logo-cn{
+  position:relative;
+  overflow:hidden;
+  border-radius:50%;
+  background:#e60012 !important;
+  color:transparent !important;
+}
+#currentBadge.logo-cn::before{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  top:14%;
+  bottom:14%;
+  background:repeating-linear-gradient(
+    90deg,
+    #fff 0 2px,
+    transparent 2px 5px
+  );
+  border-radius:999px;
+}
+#currentBadge.logo-cn::after{
+  content:"";
+  position:absolute;
+  left:39%;
+  top:9%;
+  bottom:9%;
+  width:22%;
+  border-left:2px solid #fff;
+  border-right:2px solid #fff;
+  border-radius:50%;
+  background:#e60012;
+}
+
+/* Pay and Services three-dot action sheet. */
+.home-menu-overlay{
+  z-index:150;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.50);
+}
+.home-menu-sheet{
+  width:100%;
+  background:#fff;
+  border-radius:14px 14px 0 0;
+  overflow:hidden;
+  transform:translateY(100%);
+  animation:homeMenuUp .23s cubic-bezier(.22,.78,.28,1) forwards;
+}
+@keyframes homeMenuUp{
+  to{transform:translateY(0)}
+}
+.home-menu-item{
+  width:100%;
+  height:58px;
+  border:0;
+  border-bottom:1px solid #ededed;
+  background:#fff;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+  line-height:1;
+  font-weight:400;
+  letter-spacing:-.15px;
+  cursor:pointer;
+}
+.home-menu-item.cancel{
+  border-bottom:0;
+}
+.home-menu-gap{
+  height:13px;
+  background:#f6f7f7;
+}
+
+/* Reference action sheet uses a 50% dim layer, not the older 43% layer. */
+.merchant-menu-overlay{
+  background:rgba(0,0,0,.50);
+}
+
+/* Help body defaults for desktop preview. */
+#helpPage .help-content{
+  padding:32px 26px 55px;
+}
+#helpPage .help-section{
+  margin:0 0 28px;
+}
+#helpPage .help-section h2{
+  font-size:22px;
+  line-height:1.25;
+  margin-bottom:14px;
+}
+#helpPage .help-section p{
+  margin:0 0 0 44px;
+  font-size:18px;
+  line-height:1.65;
+}
+#helpPage .help-section ul{
+  margin:12px 0 0 56px;
+  padding-left:22px;
+}
+#helpPage .help-section li{
+  padding-left:8px;
+  margin:0 0 8px;
+  font-size:18px;
+  line-height:1.55;
+}
+#helpPage .help-accessibility{
+  margin:18px 0 0;
+  font-size:16px;
+  line-height:1.5;
+}
+
+/* Make Help selectable/scrollable despite the prototype's global interaction lock. */
+#helpPage,
+#helpPage *{
+  -webkit-user-select:text !important;
+  user-select:text !important;
+}
+
+@media(max-width:520px){
+  /* Money screenshot: 942 px source = 471 CSS px at @2x. */
+  #moneyPage > .navbar{
+    height:12.8vw;
+    grid-template-columns:10vw 1fr 10vw;
+    padding:0 2vw;
+  }
+  #moneyPage .nav-title{
+    font-size:3.72vw;
+    font-weight:400;
+    letter-spacing:-.04vw;
+  }
+  #moneyPage .money-shell{
+    padding:2.05vw 1.80vw 8vw;
+  }
+  #moneyPage .pay-card{
+    border-radius:1.92vw;
+  }
+  #moneyPage .pay-card-head{
+    height:14.4vw;
+    gap:2.0vw;
+    padding:0 3.45vw;
+  }
+  #moneyPage .head-icon{
+    width:5.10vw;
+    height:5.10vw;
+  }
+  #moneyPage .pay-card-title{
+    font-size:3.65vw;
+    font-weight:400;
+    letter-spacing:-.05vw;
+  }
+  #moneyPage .more-dots{
+    font-size:4.0vw;
+    letter-spacing:.34vw;
+    transform:translateY(-.15vw);
+  }
+  #moneyPage .code-zone{
+    padding:4.65vw 3.0vw 0;
+  }
+  #moneyPage .code-hint{
+    font-size:3.05vw;
+    line-height:1.25;
+    margin-bottom:1.82vw;
+    letter-spacing:-.02vw;
+  }
+  #moneyPage .code-number{
+    font-size:1.9vw;
+    min-height:2.45vw;
+    margin:-.45vw 0 1.25vw;
+  }
+  #moneyPage #barcodeCanvas{
+    height:23.2vw;
+  }
+  #moneyPage .qr-wrap{
+    margin-top:3.15vw;
+  }
+  #moneyPage #qrCanvas{
+    width:34vw;
+    height:34vw;
+  }
+  #moneyPage .payment-method{
+    height:18.15vw;
+    min-height:18.15vw;
+    margin-top:4.55vw;
+    padding:0;
+    border-top:1px solid #ededed;
+    display:flex;
+    align-items:center;
+  }
+  #moneyPage .method-button{
+    grid-template-columns:5.55vw 1fr 3.5vw;
+    gap:1.72vw;
+    height:100%;
+    align-items:center;
+  }
+  #moneyPage .bank-badge{
+    width:5.0vw;
+    height:5.0vw;
+    font-size:2.1vw;
+  }
+  #moneyPage #currentBadge.logo-cn{
+    font-size:0;
+  }
+  #moneyPage .method-main{
+    font-size:3.42vw;
+    line-height:1.12;
+    font-weight:400;
+    letter-spacing:-.06vw;
+  }
+  #moneyPage .method-sub{
+    font-size:2.52vw;
+    line-height:1.15;
+    margin-top:1.02vw;
+  }
+  #moneyPage .chev{
+    font-size:4.2vw;
+    transform:rotate(90deg) translateX(-.2vw);
+  }
+  #moneyPage .quick-actions{
+    margin-top:1.82vw;
+    border-radius:1.92vw;
+  }
+  #moneyPage .quick-row{
+    height:15.05vw;
+    grid-template-columns:5.35vw 1fr 3.4vw;
+    gap:1.75vw;
+    padding:0 3.80vw;
+  }
+  #moneyPage .quick-row svg{
+    width:4.7vw;
+    height:4.7vw;
+  }
+  #moneyPage .quick-title{
+    font-size:3.58vw;
+    font-weight:400;
+    letter-spacing:-.04vw;
+  }
+  #moneyPage .quick-chev{
+    font-size:5.0vw;
+    color:rgba(255,255,255,.36);
+  }
+
+  /* Top-level action sheet: geometry from IMG_4656. */
+  .home-menu-sheet{
+    border-radius:1.9vw 1.9vw 0 0;
+  }
+  .home-menu-item{
+    height:12.05vw;
+    font-size:3.73vw;
+    letter-spacing:-.04vw;
+  }
+  .home-menu-item.cancel{
+    height:calc(12.05vw + env(safe-area-inset-bottom));
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .home-menu-gap{
+    height:1.65vw;
+  }
+
+  /* Money FAQ / Help screen: geometry and typography from IMG_4655. */
+  #helpPage > .navbar{
+    height:10.95vw;
+    grid-template-columns:11.5vw 1fr 11.5vw;
+    padding:0 2.25vw;
+  }
+  #helpPage .nav-title{
+    font-size:3.72vw;
+    line-height:1;
+    font-weight:400;
+  }
+  #helpPage .navbtn{
+    width:7.2vw;
+    height:7.2vw;
+  }
+  #helpPage .navbtn svg{
+    width:4.3vw;
+    height:4.3vw;
+  }
+  #helpPage .help-content{
+    padding:5.25vw 3.35vw 7vw;
+  }
+  #helpPage .help-section{
+    margin:0 0 4.45vw;
+  }
+  #helpPage .help-section h2{
+    margin:0 0 1.95vw;
+    font-size:3.52vw;
+    line-height:1.2;
+    font-weight:400;
+    letter-spacing:-.035vw;
+  }
+  #helpPage .help-section p{
+    margin:0 0 0 7.05vw;
+    font-size:3.17vw;
+    line-height:1.70;
+    letter-spacing:-.025vw;
+  }
+  #helpPage .help-section.security{
+    margin-bottom:3.9vw;
+  }
+  #helpPage .help-section ul{
+    margin:1.9vw 0 0 6.9vw;
+    padding-left:5.25vw;
+    list-style-type:square;
+  }
+  #helpPage .help-section li{
+    padding-left:1.35vw;
+    margin:0 0 1.05vw;
+    font-size:3.17vw;
+    line-height:1.60;
+    letter-spacing:-.025vw;
+  }
+  #helpPage .help-section li::marker{
+    font-size:.72em;
+    color:#777;
+  }
+  #helpPage .help-accessibility{
+    margin:0;
+    font-size:2.90vw;
+    line-height:1.48;
+    letter-spacing:-.02vw;
+  }
+}
+
+/* ============================================================
+   V14 — Balance withdrawal / Mainland FPS flow from supplied refs
+   IMG_4657, IMG_4658, IMG_4660, IMG_4661, IMG_4662.
+   ============================================================ */
+.transfer-flow-page{
+  background:#f6f7f7;
+  color:#151515;
+  transform:translateX(100%);
+  z-index:8;
+  overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
+}
+#balanceWithdrawalPage{z-index:9;background:#f2f2f2}
+#mainlandTransferPage{z-index:9;background:#fff}
+.viewport.receiving-open #receivingRegionPage,
+.viewport.balance-withdrawal-open #balanceWithdrawalPage,
+.viewport.mainland-transfer-open #mainlandTransferPage{transform:translateX(0)}
+.viewport.receiving-open #balancePage,
+.viewport.balance-withdrawal-open #receivingRegionPage,
+.viewport.mainland-transfer-open #receivingRegionPage{transform:translateX(-22%);opacity:.78}
+
+.transfer-flow-page > .flow-navbar{
+  position:sticky;
+  top:0;
+  z-index:90;
+  height:84px;
+  background:#ededed;
+  color:#111;
+  box-shadow:0 1px 0 rgba(0,0,0,.025);
+}
+.transfer-flow-page > .flow-navbar.titled .nav-title{font-size:25px;font-weight:500}
+.transfer-flow-page .navbtn{color:#111}
+
+/* faux embedded-browser bottom navigation visible in the reference pages */
+.webview-bottom-bar{
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:78px;
+  background:#f7f7f7;
+  border-top:1px solid #e8e8e8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:118px;
+  z-index:95;
+}
+.webview-nav{
+  border:0;background:transparent;padding:0;
+  width:48px;height:58px;
+  display:grid;place-items:center;
+  font-family:Arial,sans-serif;
+  font-size:54px;font-weight:200;line-height:.8;
+  color:#111;cursor:pointer;
+}
+.webview-nav.forward{color:#bababa}
+
+/* Select receiving region */
+.receiving-content{
+  position:absolute;
+  top:84px;left:0;right:0;bottom:78px;
+  padding:95px 39px 34px;
+  overflow-y:auto;
+}
+.receiving-content h1{
+  margin:0 0 78px;
+  text-align:center;
+  font-size:36px;
+  line-height:1.12;
+  font-weight:600;
+  letter-spacing:-.7px;
+}
+.receiving-card{
+  background:#fff;
+  border-radius:17px;
+  overflow:hidden;
+}
+.receiving-option{
+  width:100%;
+  min-height:143px;
+  border:0;
+  border-bottom:1px solid #e5e5e5;
+  background:#fff;
+  display:grid;
+  grid-template-columns:1fr 36px;
+  align-items:center;
+  text-align:left;
+  padding:26px 26px 26px 39px;
+  cursor:pointer;
+  color:#111;
+}
+.receiving-option:last-child{border-bottom:0}
+.receiving-title{
+  font-size:28px;
+  line-height:1.2;
+  font-weight:400;
+  letter-spacing:-.35px;
+}
+.receiving-sub{
+  margin-top:12px;
+  max-width:95%;
+  font-size:22px;
+  line-height:1.34;
+  color:#878787;
+  font-weight:400;
+}
+.receiving-chevron{
+  color:#b8b8b8;
+  text-align:right;
+  font-size:45px;
+  line-height:1;
+  font-weight:200;
+}
+.withdrawal-notes-link{
+  display:block;
+  margin:47px auto 0;
+  border:0;background:transparent;
+  color:#526d9c;
+  font-size:23px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Withdrawal Notes sheet */
+.withdrawal-notes-overlay{
+  z-index:300;
+  align-items:flex-end;
+  justify-content:center;
+  bottom:78px;
+  background:rgba(0,0,0,.55);
+}
+.withdrawal-notes-sheet{
+  width:100%;
+  height:73%;
+  min-height:640px;
+  max-height:1120px;
+  background:#fff;
+  border-radius:24px 24px 0 0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transform:translateY(100%);
+  animation:withdrawNotesUp .24s cubic-bezier(.22,.78,.28,1) forwards;
+}
+@keyframes withdrawNotesUp{to{transform:translateY(0)}}
+.withdrawal-notes-head{
+  height:103px;
+  flex:0 0 103px;
+  display:grid;
+  grid-template-columns:76px 1fr 76px;
+  align-items:center;
+  padding:0 26px;
+}
+.withdrawal-notes-head button{
+  width:50px;height:50px;border:0;background:transparent;
+  font-size:49px;font-weight:200;line-height:1;cursor:pointer;color:#111;
+}
+.withdrawal-notes-head h2{
+  margin:0;text-align:center;font-size:26px;font-weight:600;color:#111;
+}
+.withdrawal-notes-body{
+  flex:1;
+  overflow:hidden;
+  padding:0 40px;
+  color:#161616;
+  font-size:21.5px;
+  line-height:1.42;
+  letter-spacing:-.15px;
+}
+.withdrawal-notes-body p{margin:0 0 2px}
+.withdrawal-notes-body .indent{padding-left:64px;text-indent:-1px}
+.withdrawal-notes-body .notes-break{margin-top:33px}
+.withdrawal-notes-ok{
+  flex:0 0 67px;
+  width:49%;
+  margin:12px auto 42px;
+  border:0;
+  border-radius:7px;
+  background:#05c967;
+  color:#fff;
+  font-size:29px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+/* Balance Withdrawal */
+.withdraw-destination{
+  height:178px;
+  padding:55px 40px 20px;
+  display:grid;
+  grid-template-columns:190px 1fr;
+  align-items:start;
+  background:#f2f2f2;
+}
+.destination-label{
+  font-size:25px;
+  line-height:1.2;
+}
+.destination-bank{
+  border:0;background:transparent;padding:0;
+  display:grid;
+  grid-template-columns:39px 1fr 25px;
+  column-gap:12px;
+  align-items:start;
+  text-align:left;
+  color:#111;
+  cursor:pointer;
+}
+.citi-mark{
+  width:35px;height:35px;border-radius:50%;
+  background:#fff;border:1px solid #d9d9d9;
+  display:grid;place-items:center;
+  color:#1f4f91;
+  font-size:12px;font-weight:700;font-family:Arial,sans-serif;
+}
+.citi-mark span{position:relative;top:1px}
+.destination-bank-copy strong{display:block;font-size:25px;font-weight:400;line-height:1.15}
+.destination-bank-copy small{display:block;margin-top:13px;font-size:21px;color:#898989;font-weight:400}
+.destination-chev{font-size:40px;color:#c5c5c5;line-height:.8;text-align:right}
+.withdraw-card{
+  position:absolute;
+  top:262px;left:0;right:0;bottom:39%;
+  background:#fff;
+  border-radius:26px 26px 0 0;
+  padding:39px 40px 24px;
+}
+.withdraw-card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:26px;
+}
+.withdraw-card-head button{
+  border:0;background:transparent;color:#526d9c;
+  font-size:24px;cursor:pointer;padding:0;
+}
+.withdraw-amount-row{
+  display:flex;align-items:flex-start;
+  margin-top:48px;
+  color:#111;
+}
+.withdraw-currency{font-size:46px;font-weight:500;line-height:1.1;margin-top:2px}
+.withdraw-amount{
+  margin-left:24px;
+  font-size:76px;
+  line-height:.9;
+  font-weight:500;
+  color:#e7e7e7;
+  letter-spacing:-2px;
+}
+.withdraw-rule{height:2px;background:#00c66a;margin-top:25px}
+.withdraw-balance-line{
+  margin-top:35px;
+  display:flex;align-items:center;gap:18px;
+  color:#858585;font-size:23px;
+}
+.withdraw-balance-line button{
+  border:0;background:transparent;padding:0;
+  color:#526d9c;font-size:23px;cursor:pointer;
+}
+.numeric-keypad{
+  position:absolute;
+  left:0;right:0;bottom:78px;
+  height:31%;
+  min-height:360px;
+  background:#f3f3f3;
+  padding:17px 18px 16px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:16px;
+  z-index:20;
+}
+.numeric-keypad button{
+  border:0;border-radius:8px;background:#fff;color:#151515;
+  font-size:41px;font-weight:400;cursor:pointer;
+}
+.numeric-keypad .backspace{font-size:34px;font-weight:600}
+.numeric-keypad .confirm{
+  grid-column:4;
+  grid-row:2 / 5;
+  background:#79d7aa;
+  color:#fff;
+  font-size:27px;
+  font-weight:600;
+}
+.numeric-keypad .zero{grid-column:1 / 3}
+
+/* Mainland FPS transfer */
+.mainland-content{
+  position:absolute;
+  top:84px;left:0;right:0;bottom:78px;
+  padding:94px 40px 30px;
+  overflow-y:auto;
+  background:#fff;
+}
+.mainland-content h1{
+  margin:0 0 101px;
+  text-align:center;
+  font-size:37px;
+  line-height:1.15;
+  font-weight:600;
+  letter-spacing:-.55px;
+}
+.transfer-tabs{
+  height:77px;
+  border-radius:40px;
+  background:#f0f0f0;
+  padding:8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:stretch;
+  margin-bottom:44px;
+}
+.transfer-tab{
+  border:0;
+  border-radius:35px;
+  background:transparent;
+  color:#7e7e7e;
+  font-size:27px;
+  font-weight:500;
+  cursor:pointer;
+}
+.transfer-tab.active{background:#fff;color:#111}
+.transfer-form{border-top:1px solid #ececec}
+.hidden-form{display:none}
+.transfer-row{
+  width:100%;
+  min-height:112px;
+  border:0;
+  border-bottom:1px solid #ececec;
+  background:#fff;
+  display:grid;
+  grid-template-columns:235px 1fr 28px;
+  align-items:center;
+  text-align:left;
+  padding:0;
+  color:#111;
+  font-size:26px;
+}
+.transfer-row input{
+  width:100%;
+  min-width:0;
+  border:0;outline:0;background:transparent;
+  font-size:26px;color:#111;padding:0 12px 0 0;
+}
+.transfer-row input::placeholder,
+.transfer-placeholder{color:#c3c3c3;opacity:1;font-weight:400}
+.transfer-label{font-size:26px;color:#111}
+.row-chev{font-size:44px;color:#b9b9b9;text-align:right;line-height:1}
+.transfer-example{
+  min-height:63px;
+  padding-top:16px;
+  border-bottom:0;
+  color:#818181;
+  font-size:21px;
+  font-weight:600;
+}
+.transfer-next{
+  width:52%;
+  height:72px;
+  display:block;
+  margin:54px auto 0;
+  border:0;border-radius:7px;
+  background:#91e0bb;
+  color:#fff;
+  font-size:29px;font-weight:600;
+  cursor:pointer;
+}
+.mobile-row{
+  grid-template-columns:220px 1fr;
+}
+.country-code{font-size:26px}
+.transfer-placeholder.multiline{line-height:1.18}
+
+@media(max-width:520px){
+  .transfer-flow-page > .flow-navbar{
+    height:11.5vw;
+    grid-template-columns:10vw 1fr 10vw;
+    padding:0 2vw;
+  }
+  .transfer-flow-page > .flow-navbar.titled .nav-title{font-size:4.15vw}
+  .transfer-flow-page .navbtn{width:7vw;height:7vw}
+  .transfer-flow-page .navbtn svg{width:4.5vw;height:4.5vw}
+  .webview-bottom-bar{height:9.65vw;gap:14.4vw}
+  .webview-nav{width:6.2vw;height:7vw;font-size:7.2vw}
+
+  .receiving-content{top:11.5vw;bottom:9.65vw;padding:12.8vw 4.7vw 4vw}
+  .receiving-content h1{margin-bottom:9.6vw;font-size:5.35vw;letter-spacing:-.08vw}
+  .receiving-card{border-radius:2.05vw}
+  .receiving-option{min-height:17.55vw;grid-template-columns:1fr 4.5vw;padding:3.15vw 3.1vw 3.15vw 4.3vw}
+  .receiving-title{font-size:4.05vw}
+  .receiving-sub{margin-top:1.35vw;font-size:3.25vw;line-height:1.35}
+  .receiving-chevron{font-size:5.6vw}
+  .withdrawal-notes-link{margin-top:5.8vw;font-size:3.25vw}
+
+  .withdrawal-notes-overlay{bottom:9.65vw}
+  .withdrawal-notes-sheet{height:73%;min-height:0;border-radius:3vw 3vw 0 0}
+  .withdrawal-notes-head{height:12.7vw;flex-basis:12.7vw;grid-template-columns:9vw 1fr 9vw;padding:0 3.1vw}
+  .withdrawal-notes-head button{width:6vw;height:6vw;font-size:6.2vw}
+  .withdrawal-notes-head h2{font-size:3.4vw}
+  .withdrawal-notes-body{padding:0 4.3vw;font-size:3.25vw;line-height:1.38}
+  .withdrawal-notes-body .indent{padding-left:7.2vw}
+  .withdrawal-notes-body .notes-break{margin-top:3.8vw}
+  .withdrawal-notes-ok{flex-basis:8.1vw;width:49%;margin:1.45vw auto 5vw;border-radius:.85vw;font-size:3.55vw}
+
+  .withdraw-destination{height:21.7vw;padding:6.7vw 4.4vw 2.4vw;grid-template-columns:28.8vw 1fr}
+  .destination-label{font-size:3.75vw}
+  .destination-bank{grid-template-columns:4.5vw 1fr 3vw;column-gap:1.4vw}
+  .citi-mark{width:4.2vw;height:4.2vw;font-size:1.55vw}
+  .destination-bank-copy strong{font-size:3.75vw}
+  .destination-bank-copy small{margin-top:1.4vw;font-size:3.2vw}
+  .destination-chev{font-size:5vw}
+  .withdraw-card{top:33.2vw;bottom:39%;border-radius:3.15vw 3.15vw 0 0;padding:4.8vw 4.3vw 3vw}
+  .withdraw-card-head{font-size:3.7vw}
+  .withdraw-card-head button{font-size:3.45vw}
+  .withdraw-amount-row{margin-top:5.8vw}
+  .withdraw-currency{font-size:6.45vw}
+  .withdraw-amount{margin-left:2.8vw;font-size:10.8vw;letter-spacing:-.25vw}
+  .withdraw-rule{height:.24vw;margin-top:3vw}
+  .withdraw-balance-line{margin-top:4.1vw;gap:2.1vw;font-size:3.25vw}
+  .withdraw-balance-line button{font-size:3.25vw}
+  .numeric-keypad{bottom:9.65vw;height:31%;min-height:0;padding:1.9vw 2.1vw 1.9vw;gap:1.85vw}
+  .numeric-keypad button{border-radius:.9vw;font-size:5.7vw}
+  .numeric-keypad .backspace{font-size:4.5vw}
+  .numeric-keypad .confirm{font-size:3.6vw}
+
+  .mainland-content{top:11.5vw;bottom:9.65vw;padding:12.7vw 4.2vw 3.2vw}
+  .mainland-content h1{margin-bottom:12vw;font-size:5.35vw}
+  .transfer-tabs{height:9.15vw;border-radius:5vw;padding:1vw;margin-bottom:4.6vw}
+  .transfer-tab{border-radius:4.2vw;font-size:3.55vw}
+  .transfer-row{min-height:13.4vw;grid-template-columns:29vw 1fr 3.5vw;font-size:3.55vw}
+  .transfer-row input{font-size:3.55vw;padding-right:1.4vw}
+  .transfer-label{font-size:3.55vw}
+  .row-chev{font-size:5.5vw}
+  .transfer-example{min-height:7.8vw;padding-top:1.9vw;font-size:2.75vw}
+  .transfer-next{width:52%;height:8.8vw;margin-top:5.7vw;border-radius:.85vw;font-size:3.7vw}
+  .mobile-row{grid-template-columns:29vw 1fr}
+  .country-code{font-size:3.55vw}
+}
+
+/* V14.1 — vertical calibration for the supplied 942×2048 iPhone captures. */
+@media(max-width:520px){
+  .webview-bottom-bar{height:9.4vh}
+  .receiving-content,
+  .mainland-content{bottom:9.4vh}
+  .withdrawal-notes-overlay{bottom:9.4vh}
+  .numeric-keypad{bottom:9.4vh}
+}
+
+/* ============================================================
+   V15 — receiving-bank picker, withdrawal instruction note,
+   withdrawal-bank account page and embedded webview action menu.
+   Calibrated from IMG_4663 / 4664 / 4665 / 4666 / 4668.
+   ============================================================ */
+#withdrawBankAccountsPage{z-index:10;background:#f7f7f7}
+.viewport.withdraw-bank-accounts-open #withdrawBankAccountsPage{transform:translateX(0)}
+.viewport.withdraw-bank-accounts-open #balanceWithdrawalPage{transform:translateX(-22%);opacity:.78}
+
+/* Bank account for withdrawal */
+.withdraw-bank-accounts-content{
+  position:absolute;
+  top:84px;left:0;right:0;bottom:78px;
+  background:#f7f7f7;
+  overflow:auto;
+}
+.withdraw-bank-section-title{
+  height:62px;
+  display:flex;
+  align-items:center;
+  padding:0 34px;
+  color:#8c8c8c;
+  background:#f7f7f7;
+  border-bottom:1px solid #e7e7e7;
+  font-size:23px;
+  font-weight:400;
+}
+.withdraw-bank-row{
+  width:100%;
+  height:112px;
+  border:0;
+  border-bottom:1px solid #e9e9e9;
+  background:#fff;
+  display:grid;
+  grid-template-columns:68px 1fr;
+  align-items:center;
+  padding:0 56px;
+  text-align:left;
+  color:#111;
+  font-size:29px;
+  font-weight:400;
+  cursor:pointer;
+}
+.withdraw-bank-logo{width:47px;height:47px;display:block}
+.withdraw-bank-logo svg{width:100%;height:100%;display:block}
+.use-new-bank-account{
+  display:block;
+  width:61%;
+  height:86px;
+  margin:64px auto 0;
+  border:0;
+  border-radius:7px;
+  background:#fff;
+  color:#07b85d;
+  font-size:28px;
+  font-weight:500;
+  cursor:pointer;
+}
+.use-new-bank-account span{font-size:34px;font-weight:300;vertical-align:-1px;margin-right:4px}
+
+/* Mainland receiving bank selector */
+.receiving-bank-overlay{
+  z-index:430;
+  bottom:78px;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.56);
+}
+.receiving-bank-sheet{
+  width:100%;
+  height:71%;
+  background:#fff;
+  border-radius:24px 24px 0 0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transform:translateY(100%);
+  animation:v15SheetUp .23s cubic-bezier(.22,.78,.28,1) forwards;
+}
+@keyframes v15SheetUp{to{transform:translateY(0)}}
+.receiving-bank-head{
+  height:116px;
+  flex:0 0 116px;
+  display:grid;
+  grid-template-columns:100px 1fr 100px;
+  align-items:center;
+  padding:0 29px;
+  background:#fff;
+}
+.receiving-bank-head button{
+  width:55px;height:55px;border:0;background:transparent;padding:0;
+  color:#111;font-size:53px;font-weight:200;line-height:1;cursor:pointer;
+}
+.receiving-bank-head h2{
+  margin:0;
+  text-align:center;
+  color:#111;
+  font-size:27px;
+  font-weight:600;
+  letter-spacing:-.25px;
+}
+.receiving-bank-list{flex:1;min-height:0;overflow-y:auto;background:#fff;-webkit-overflow-scrolling:touch}
+.receiving-bank-row{
+  width:100%;
+  height:122px;
+  border:0;
+  border-bottom:1px solid #e8e8e8;
+  background:#fff;
+  display:grid;
+  grid-template-columns:90px 1fr;
+  align-items:center;
+  padding:0 38px;
+  color:#111;
+  text-align:left;
+  font-size:29px;
+  font-weight:400;
+  cursor:pointer;
+}
+.receiving-bank-row > span:last-child{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cn-bank-logo{width:54px;height:54px;display:block}
+.cn-bank-logo svg{width:100%;height:100%;display:block}
+.weremit-more-banks{
+  width:100%;
+  min-height:166px;
+  border:0;
+  background:#fff;
+  color:#ff9324;
+  font-size:23px;
+  line-height:1.45;
+  text-align:center;
+  cursor:pointer;
+}
+.weremit-more-banks span{font-size:35px;vertical-align:-3px;margin-left:4px}
+.transfer-placeholder.selected-bank-name{color:#111}
+
+/* Balance withdrawal instruction note */
+.withdrawal-instruction-overlay{
+  z-index:440;
+  bottom:78px;
+  align-items:center;
+  justify-content:center;
+  padding:0 7.3%;
+  background:rgba(0,0,0,.53);
+}
+.withdraw-instruction-dialog{
+  width:100%;
+  max-height:78%;
+  background:#fff;
+  border-radius:24px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 4px 20px rgba(0,0,0,.04);
+}
+.withdraw-instruction-content{padding:68px 71px 59px;overflow:auto}
+.withdraw-instruction-content h2{
+  margin:0 0 48px;
+  text-align:center;
+  color:#111;
+  font-size:32px;
+  font-weight:400;
+}
+.withdraw-instruction-text{
+  color:#8a8a8a;
+  text-align:center;
+  font-size:27px;
+  line-height:1.48;
+  letter-spacing:-.3px;
+}
+.withdraw-instruction-text p{margin:0}
+.withdraw-instruction-ok{
+  flex:0 0 112px;
+  border:0;
+  border-top:1px solid #ececec;
+  background:#fff;
+  color:#526d9c;
+  font-size:30px;
+  font-weight:400;
+  cursor:pointer;
+}
+
+/* Embedded browser action menu */
+.webview-more-overlay{
+  z-index:700;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.52);
+}
+.webview-more-sheet{
+  width:100%;
+  min-height:46%;
+  max-height:58%;
+  background:rgba(247,247,247,.985);
+  border-radius:24px 24px 0 0;
+  overflow:hidden;
+  padding:0 0 env(safe-area-inset-bottom);
+  transform:translateY(100%);
+  animation:v15SheetUp .22s cubic-bezier(.22,.78,.28,1) forwards;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
+}
+.webview-more-powered{
+  height:83px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#686868;
+  font-size:16px;
+  font-weight:400;
+}
+.webview-action-row{display:flex;align-items:flex-start}
+.webview-action-row-primary{
+  gap:22px;
+  padding:0 23px 36px;
+  justify-content:flex-start;
+}
+.webview-action-row-secondary{
+  justify-content:space-between;
+  padding:0 23px 37px;
+}
+.webview-action{
+  position:relative;
+  width:106px;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:#111;
+  cursor:pointer;
+}
+.webview-action-icon{
+  width:106px;
+  height:106px;
+  border-radius:17px;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  box-shadow:0 1px 0 rgba(0,0,0,.015);
+}
+.webview-action-icon svg{width:62px;height:62px;display:block}
+.webview-action-label{
+  margin-top:13px;
+  color:#6f6f6f;
+  text-align:center;
+  font-size:16px;
+  line-height:1.15;
+  font-weight:400;
+}
+.text-size-icon span{font-family:Arial,sans-serif;font-size:37px;font-weight:400;letter-spacing:-2px;color:#111}
+.webview-new-badge{
+  position:absolute;
+  top:-15px;
+  right:-3px;
+  z-index:2;
+  background:#ff4e55;
+  color:#fff;
+  border-radius:16px;
+  padding:3px 8px 4px;
+  font-size:14px;
+  line-height:1;
+  font-weight:600;
+}
+.webview-more-cancel{
+  width:100%;
+  height:116px;
+  border:0;
+  border-top:1px solid #dedede;
+  background:rgba(249,249,249,.99);
+  color:#526d9c;
+  font-size:24px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+@media(max-width:520px){
+  .withdraw-bank-accounts-content{top:11.5vw;bottom:9.4vh}
+  .withdraw-bank-section-title{height:7.45vw;padding:0 3.55vw;font-size:3.28vw}
+  .withdraw-bank-row{height:13.1vw;grid-template-columns:7.8vw 1fr;padding:0 6.15vw;font-size:4.05vw}
+  .withdraw-bank-logo{width:5.25vw;height:5.25vw}
+  .use-new-bank-account{width:61%;height:10.4vw;margin-top:7.1vw;border-radius:.8vw;font-size:3.75vw}
+  .use-new-bank-account span{font-size:4.3vw}
+
+  .receiving-bank-overlay{bottom:9.4vh}
+  .receiving-bank-sheet{height:71%;border-radius:2.9vw 2.9vw 0 0}
+  .receiving-bank-head{height:13.8vw;flex-basis:13.8vw;grid-template-columns:11vw 1fr 11vw;padding:0 3.1vw}
+  .receiving-bank-head button{width:6.3vw;height:6.3vw;font-size:6.5vw}
+  .receiving-bank-head h2{font-size:3.65vw}
+  .receiving-bank-row{height:14.85vw;grid-template-columns:10.5vw 1fr;padding:0 4.1vw;font-size:4.15vw}
+  .cn-bank-logo{width:6.25vw;height:6.25vw}
+  .weremit-more-banks{min-height:19.5vw;font-size:3.25vw}
+  .weremit-more-banks span{font-size:4.5vw}
+
+  .withdrawal-instruction-overlay{bottom:9.4vh;padding:0 7.35vw}
+  .withdraw-instruction-dialog{border-radius:2.8vw}
+  .withdraw-instruction-content{padding:8.1vw 8.35vw 7vw}
+  .withdraw-instruction-content h2{margin-bottom:5.75vw;font-size:4.55vw}
+  .withdraw-instruction-text{font-size:4.02vw;line-height:1.47;letter-spacing:-.035vw}
+  .withdraw-instruction-ok{flex-basis:13.5vw;font-size:4.15vw}
+
+  .webview-more-sheet{min-height:45.4%;border-radius:2.75vw 2.75vw 0 0}
+  .webview-more-powered{height:11.8vw;font-size:2.52vw}
+  .webview-action-row-primary{gap:2.7vw;padding:0 2.85vw 4.25vw}
+  .webview-action-row-secondary{padding:0 2.85vw 4.4vw}
+  .webview-action{width:12.7vw}
+  .webview-action-icon{width:12.7vw;height:12.7vw;border-radius:2vw}
+  .webview-action-icon svg{width:7.45vw;height:7.45vw}
+  .webview-action-label{margin-top:1.55vw;font-size:2.32vw;line-height:1.15}
+  .text-size-icon span{font-size:4.55vw;letter-spacing:-.25vw}
+  .webview-new-badge{top:-1.75vw;right:-.35vw;border-radius:1.9vw;padding:.35vw .95vw .42vw;font-size:1.95vw}
+  .webview-more-cancel{height:13.9vw;font-size:3.35vw}
+}
+/* V15.1: exact vertical footprint of IMG_4668. */
+.webview-more-sheet{height:36.8%;min-height:0;max-height:none;display:flex;flex-direction:column}
+.webview-more-cancel{margin-top:auto;flex:0 0 116px}
+@media(max-width:520px){
+  .webview-more-sheet{height:36.8%;min-height:0;max-height:none}
+  .webview-more-cancel{flex-basis:13.9vw}
+}
